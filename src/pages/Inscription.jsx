@@ -1,220 +1,127 @@
-import { useState } from "react";
-import { User, Lock, Mail } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
-export default function Inscription() {
-const [email, setEmail] = useState("");
-const [password, setPassword] = useState("");
-const [nom, setNom] = useState("");
-const [prenom, setPrenom] = useState("");
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
-const handleNavigation = (page) => {
-  console.log(`Navigation vers: ${page}`);
-  navigate(`/${page}`);
-};
+const Inscription = () => {
+    // Ajout d'un état pour gérer les champs du formulaire (Axe d'amélioration)
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        nom: '',
+        prenom: ''
+    });
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(90deg, rgba(69,0,171,1) 0%, rgba(135,0,194,1) 100%)"
-      }}
-    >
-      {/* CADRE */}
-      <div
-        style={{
-          width: "80%",
-          maxWidth: "1400px",
-          height: "650px",
-          position: "relative",
-          borderRadius: "30px",
-          overflow: "hidden",
-          boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
-        }}
-      >
-        {/* IMAGE */}
-        <img
-          src="/src/assets/fond_pconnexioninscr.jpg"
-          alt="fond"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
-
-        {/* CONTENU */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-          }}
-        >
-          {/* GAUCHE */}
-          <div
-            style={{
-              width: "50%",
-              paddingLeft: "80px",
-              paddingTop: "90px",
-              color: "white",
-            }}
-          >
-            <h1 style={{ fontSize: "48px", fontWeight: "bold" }}>
-              BIENVENUE
-            </h1>
-            <p style={{ marginTop: "20px", fontWeight: "600" }}>
-              Débutez votre reconversion
-            </p>
-            <p style={{ marginTop: "20px", maxWidth: "420px" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse varius enim in eros elementum tristique.
-            </p>
-          </div>
-
-          {/* DROITE */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                width: "360px",
-                background: "white",
-                borderRadius: "18px",
-                padding: "32px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginBottom: "8px",
-                }}
-              >
-                Inscription
-              </h2>
-
-              <p
-                style={{
-                  fontSize: "12px",
-                  textAlign: "center",
-                  marginBottom: "24px",
-                }}
-              >
-                Déjà inscrit ?{" "}
-                <span onClick={() => handleNavigation("connexion")} style={{ color: "#7b2cbf", cursor: "pointer" }}>
-                  Connectez-vous
-                </span>
-              </p>
-
-              {/* Email */}
-              <div style={{ marginBottom: "14px" }}>
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
-
-              {/* Mot de passe */}
-              <div style={{ marginBottom: "14px" }}>
-                <input
-                  type="password"
-                  placeholder="Mot de passe"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
-
-              {/* Nom */}
-              <div style={{ marginBottom: "14px" }}>
-                <input
-                  type="text"
-                  placeholder="Nom"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
-
-              {/* Prénom */}
-              <div style={{ marginBottom: "22px" }}>
-                <input
-                  type="text"
-                  placeholder="Prénom"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
-
-              <button
-              onClick={() => {
-    const newUser = {
-      role: "APPRENANT",
-      email,
-      nom,
-      prenom
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    localStorage.setItem("user", JSON.stringify(newUser));
-    navigate("/accueil");
-  }}
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "10px",
-                  border: "none",
-                  background:
-                    "linear-gradient(90deg, rgba(69,0,171,1), rgba(135,0,194,1))",
-                }}
-              >
-                S'inscrire
-              </button>
+    return (
+        <div className="flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+            <div className="container mx-auto px-4">
+                <div className="flex justify-center">
+                    <div className="w-full max-w-5xl">
+                        {/* Carte principale */}
+                        <div 
+                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
+                            style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
+                        >
+                            
+                            {/* Côté Gauche - Message de bienvenue */}
+                            <div className="md:w-1/2 flex flex-col p-10 lg:p-16 text-white ">
+                                <h2 className="text-5xl lg:text-6xl font-bold mb-6">BIENVENUE</h2>
+                                <h4 className="text-xl font-light mb-6 tracking-widest uppercase">
+                                    Débutez votre reconversion
+                                </h4>
+                                <p className="text-sm leading-relaxed opacity-90">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce convallis ac velit non porttitor. Quisque eu convallis massa. Praesent feugiat iaculis nunc.
+                                </p>
+                            </div>
+
+                            {/* Côté Droit - Formulaire */}
+                            <div className="md:w-1/2 p-10 lg:p-16 ">
+                                <div className="mb-6">
+                                    <h2 className="text-3xl font-bold mb-2 text-black">Inscription</h2>
+                                    <p className="text-sm text-gray-600">
+                                        Déjà inscrit ?{' '}
+                                        <Link 
+                                            to="/Connexion" 
+                                            className="no-underline font-bold text-gray-950 hover:text-purple-600 transition-colors "
+                                        >
+                                            Connectez-vous.
+                                        </Link>
+                                    </p>
+                                </div>
+
+                                <form className="space-y-4 w-80">
+                                    {/* Email */}
+                                    <div>
+           
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            className=" w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
+                                            placeholder="Email"
+                                            required
+                                        />
+                                    </div>
+
+                                    {/* Mot de passe */}
+                                    <div>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={formData.password}
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            placeholder="Mot de passe"
+                                            required
+                                        />
+                                    </div>
+
+                                    {/* Nom */}
+                                    <div>
+                                        <input
+                                            type="text"
+                                            name="nom"
+                                            value={formData.nom}
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            placeholder="Nom"
+                                        />
+                                    </div>
+
+                                    {/* Prénom */}
+                                    <div className="pb-4">
+                                        <input
+                                            type="text"
+                                            name="prenom"
+                                            value={formData.prenom}
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            placeholder="Prénom"
+                                        />
+                                    </div>
+
+                                    {/* Bouton de validation */}
+                                    <div className='mt-0'>
+                                        <button
+                                            type="submit"
+                                            className="w-full py-3 text-white font-semibold text-base rounded-2xl bg-[#6D00BC] hover:bg-[#5a009d] transform active:scale-[0.98] transition-all shadow-sm"
+                                        >
+                                            Inscription
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default Inscription;

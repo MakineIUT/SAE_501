@@ -1,180 +1,123 @@
-import { useState } from "react";
-import { User, Lock } from "lucide-react";
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Connexion() {
-  const [isLogin, setIsLogin] = useState(true);
+const Connexion = () => {
+    // État pour gérer les identifiants
+    const [credentials, setCredentials] = useState({
+        email: '',
+        password: ''
+    });
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background:
-          "linear-gradient(90deg, rgba(69,0,171,1) 0%, rgba(135,0,194,1) 100%)",
-      }}
-    >
-      {/* CADRE */}
-      <div
-        style={{
-          width: "80%",
-          maxWidth: "1400px",
-          height: "650px",
-          position: "relative",
-          borderRadius: "30px",
-          overflow: "hidden",
-          boxShadow: "0 30px 80px rgba(0,0,0,0.35)",
-        }}
-      >
-        {/* IMAGE */}
-        <img
-          src="/src/assets/fond_pconnexioninscr.jpg"
-          alt="fond"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
-        />
+    const handleChange = (e) => {
+        setCredentials({ ...credentials, [e.target.name]: e.target.value });
+    };
 
-        {/* CONTENU */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            display: "flex",
-          }}
-        >
-          {/* GAUCHE */}
-          <div
-            style={{
-              width: "50%",
-              paddingLeft: "80px",
-              paddingTop: "90px",
-              color: "white",
-            }}
-          >
-            <h1 style={{ fontSize: "48px", fontWeight: "bold" }}>
-              BIENVENUE
-            </h1>
-            <p style={{ marginTop: "20px", fontWeight: "600" }}>
-              Débutez votre reconversion
-            </p>
-            <p style={{ marginTop: "20px", maxWidth: "420px" }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Suspendisse varius enim in eros elementum tristique.
-            </p>
-          </div>
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log("Tentative de connexion avec :", credentials);
+    };
 
-          {/* DROITE */}
-          <div
-            style={{
-              width: "50%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <div
-              style={{
-                width: "360px",
-                background: "white",
-                borderRadius: "18px",
-                padding: "32px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-              }}
-            >
-              <h2
-                style={{
-                  fontSize: "30px",
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  marginBottom: "32px",
-                }}
-              >
-                Connexion
-              </h2>
+    return (
+        <div className="flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+            <div className="container mx-auto px-4">
+                <div className="flex justify-center">
+                    <div className="w-full max-w-5xl">
+                        {/* Carte principale */}
+                        <div 
+                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
+                            style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
+                        >
+                            
+                            {/* Côté Gauche - Message de bienvenue (Inversé ou identique selon ton choix) */}
+                            <div className="md:w-1/2 flex flex-col p-10 lg:p-16 text-white">
+                                <h2 className="text-5xl lg:text-6xl font-bold mb-6 text-uppercase">Bienvenue</h2>
+                                <h4 className="text-xl font-light mb-6 tracking-widest uppercase">
+                                    Débutez votre reconversion
+                                </h4>
+                                <p className="text-sm leading-relaxed opacity-90">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce convallis ac velit non porttitor. Quisque eu convallis massa. Praesent feugiat iaculis nunc.
+                                </p>
+                            </div>
 
-              <div style={{ marginBottom: "16px" }}>
-                <input
-                  type="text"
-                  placeholder="Nom d'utilisateur"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
+                            {/* Côté Droit - Formulaire de connexion */}
+                            <div className="md:w-1/2 p-10 lg:p-16 ">
+                                <div className="mb-6">
+                                    <h2 className="text-3xl font-bold mb-0 text-black">Connexion</h2>
+                                </div>
 
-              <div style={{ marginBottom: "16px" }}>
-                <input
-                  type="password"
-                  placeholder="Mot de passe"
-                  style={{
-                    width: "100%",
-                    padding: "12px 16px",
-                    borderRadius: "10px",
-                    background: "#f3f3f3",
-                    border: "none",
-                  }}
-                />
-              </div>
+                                <form onSubmit={handleSubmit} className="space-y-4 w-80">
+                                    {/* Email */}
+                                    <div>
+                                        <input
+                                            
+                                            type="email"
+                                            name="email"
+                                            value={credentials.email}
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
+                                            placeholder="Email"
+                                            required
+                                        />
+                                    </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  fontSize: "12px",
-                  marginBottom: "20px",
-                }}
-              >
-                <label>
-                  <input type="checkbox" /> se souvenir de moi
-                </label>
-                <span style={{ color: "#7b2cbf", cursor: "pointer" }}>
-                  mot de passe oublié ?
-                </span>
-              </div>
+                                    {/* Mot de passe */}
+                                    <div>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            value={credentials.password}
+                                            onChange={handleChange}
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
+                                            placeholder="Mot de passe"
+                                            required
+                                        />
+                                    </div>
+                                    {/*Se souvenir de moi & mpd oublié*/}
+                                    <div className=" flex items-center justify-between mt-4" >
+                                        <div className="flex items-center">
+                                            <input id="souvenir" name="souvenir" type="checkbox" className="accent-purple-600/25 hover:accent-purple-600 h-4 w-4 border-gray-500 focus:ring-purple-600  "/>
+                                            <label for="remember_me" className='ml-2 text-xs text-gray-500 font-bold' >
+                                                Se souvenir de moi
+                                            </label>
 
-              <button
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  color: "white",
-                  fontWeight: "bold",
-                  borderRadius: "10px",
-                  border: "none",
-                  background:
-                    "linear-gradient(90deg, rgba(69,0,171,1), rgba(135,0,194,1))",
-                  marginBottom: "14px",
-                }}
-              >
-                Connexion
-              </button>
+                                        </div>
+                                        <div className="flex items-center ">
+                                            <a href="#" className="text-xs no-underline font-bold text-[#9F00D7]">
+                                                Mot de passe oublié ?
+                                            </a>
+                                        </div>
+                                    </div>
 
-              <button
-                style={{
-                  width: "100%",
-                  padding: "12px",
-                  borderRadius: "10px",
-                  border: "1px solid #ccc",
-                  background: "white",
-                  fontWeight: "bold",
-                }}
-              >
-                S'inscrire
-              </button>
+                                    {/* Bouton de connexion */}
+                                    <div className="pt-4 mt-0">
+                                        <button
+                                            type="submit"
+                                            className="w-full py-3 text-white font-bold text-base rounded-2xl bg-[#6D00BC] hover:bg-[#5a009d] transform active:scale-[0.98] transition-all shadow-sm"
+                                        >
+                                            Connexion
+                                        </button>
+                                        {/*séparation*/}
+                                        <div className="relative flex items-center justify-center my-2">
+                                            <div className="flex-grow border-t-2 border-[#A2A2A2] rounded-lg"></div>
+                                            <span className="flex-shrink mx-2 text-[#A2A2A2] text-xs lowercase tracking-widest ">
+                                                ou
+                                            </span>
+                                            <div className="flex-grow border-t-2 border-[#A2A2A2] rounded-lg"></div>
+                                        </div>
+                                        {/*bouton d'inscription*/}
+                                        <a href ="/Inscription" className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-2 border-[#A2A2A2] hover:border-[#9F00D7] hover:border-4 hover:text-[#9F00D7] transition-all transform active:scale-[0.98]">
+                                            S'inscrire
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
+
+export default Connexion;
