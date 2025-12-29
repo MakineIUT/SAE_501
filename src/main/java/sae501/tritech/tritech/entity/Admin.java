@@ -16,7 +16,7 @@ public class Admin extends Utilisateur{
     }
 
 
-    public Admin(Long idUtilisateur, String nom, String prenom, String email, int motDePasse, int telephone, Long idAdmin) {
+    public Admin(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, int telephone, Long idAdmin) {
         super(idUtilisateur, nom, prenom, email, motDePasse, telephone);
         this.idAdmin = idAdmin;
     }

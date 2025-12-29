@@ -23,6 +23,9 @@ public class AdminService {
     @Autowired
     private UtilisateurRepository utilisateurRepository;
 
+    @Autowired
+    private AdminRepository adminRepository;
+
     public void ajouterFormateur(Formateur formateur) {
         formateurRepository.save(formateur);
     }
@@ -52,6 +55,11 @@ public class AdminService {
     }
 
     public List<Utilisateur> voirListeUtilisateurs() {
-        return utilisateurRepository.findAll();
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+        utilisateurs.addAll(adminRepository.findAll());
+        utilisateurs.addAll(apprenantRepository.findAll());
+        utilisateurs.addAll(formateurRepository.findAll());
+        return utilisateurs;
+
     }
 }

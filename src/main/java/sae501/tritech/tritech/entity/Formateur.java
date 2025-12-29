@@ -17,7 +17,7 @@ public class Formateur extends Utilisateur {
         super();
     }
 
-    public Formateur(Long idUtilisateur, String nom, String prenom, String email, int motDePasse, int telephone, Long idFormateur, String specialite, List<Session> sessions, List<Formation> formations, List<Note> notesSaisies, List<Presence> presencesGerees) {
+    public Formateur(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, int telephone, Long idFormateur, String specialite, List<Session> sessions, List<Formation> formations, List<Note> notesSaisies, List<Presence> presencesGerees) {
         super(idUtilisateur, nom, prenom, email, motDePasse, telephone);
         this.idFormateur = idFormateur;
         this.specialite = specialite;

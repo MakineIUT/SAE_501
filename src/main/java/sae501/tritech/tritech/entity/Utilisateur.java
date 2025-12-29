@@ -18,7 +18,7 @@ public class Utilisateur {
     private String email;
 
     @Column(nullable = false)
-    private int motDePasse;
+    private String motDePasse;
 
     @Column(length = 10)
     private int telephone;
@@ -28,7 +28,7 @@ public class Utilisateur {
 
     }
 
-    public Utilisateur(Long idUtilisateur, String nom, String prenom, String email, int motDePasse, int telephone) {
+    public Utilisateur(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, int telephone) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.prenom = prenom;
@@ -69,11 +69,11 @@ public class Utilisateur {
         this.email = email;
     }
 
-    public int getMotDePasse() {
+    public String getMotDePasse() {
         return motDePasse;
     }
 
-    public void setMotDePasse(int motDePasse) {
+    public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
     }
 
@@ -86,7 +86,7 @@ public class Utilisateur {
     }
 
 
-    public String inscriptionCompte(String nom, String prenom, int telephone, String email, int motDePasse) {
+    public String inscriptionCompte(String nom, String prenom, int telephone, String email, String motDePasse) {
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
@@ -94,7 +94,7 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
 
         // champ obligatoire
-        if (this.email != null && !this.email.isEmpty() && this.motDePasse != 0) {
+        if (this.email != null && !this.email.isEmpty() && this.motDePasse != null && !this.motDePasse.isEmpty()) {
             return "Inscription réussie pour " + this.prenom + " " + this.nom + ". Un mail de confirmation a été envoyé à " + this.email;
         } else {
             return "Erreur : Veuillez renseigner tous les champs obligatoires.";
@@ -102,7 +102,7 @@ public class Utilisateur {
     }
 
     public boolean connexion(String email, String password) {
-        return this.email.equals(email) && this.motDePasse == Integer.parseInt(password);
+        return this.email.equals(email) && this.motDePasse.equals(password);
     }
 
     public void deconnexion(HttpSession session) {

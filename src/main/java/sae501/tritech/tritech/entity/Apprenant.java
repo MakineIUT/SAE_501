@@ -18,7 +18,7 @@ public class Apprenant extends Utilisateur {
         super();
     }
 
-    public Apprenant(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, String telephone, Long idApprenant, LocalDate dateInscription, List<Inscription> inscriptions, List<Note> notes, List<Attestation> attestations, List<Presence> presences) {
+    public Apprenant(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, int telephone, Long idApprenant, LocalDate dateInscription, List<Inscription> inscriptions, List<Note> notes, List<Attestation> attestations, List<Presence> presences) {
         super(idUtilisateur, nom, prenom, email, motDePasse, telephone);
         this.idApprenant = idApprenant;
         this.dateInscription = dateInscription;
