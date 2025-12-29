@@ -24,7 +24,7 @@ const Connexion = () => {
                     <div className="w-full max-w-5xl">
                         {/* Carte principale */}
                         <div 
-                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
+                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] mb-12 overflow-hidden bg-white bg-center bg-cover"
                             style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
                         >
                             

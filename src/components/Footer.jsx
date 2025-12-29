@@ -5,66 +5,28 @@ import logotritech from "../assets/logotritech.jpg";
 
 function Footer() {
   return (
-    <footer
-      style={{
-        backgroundColor: "#f8f9fa",
-        padding: "60px 0",
-        // marginTop: "200px",
-      }}
-    >
-      <div className="container">
-        <div className="row text-start">
-
-          {/* LOGO */}
-          <div className="col-md-3 mb-4">
-                      <div
-                        className="bg-grey rounded-circle d-flex align-items-center justify-content-center"
-                        onClick={() => handleNavigation("accueil")}
-              style={{
-                width: "250px",
-                height: "250px",
-                backgroundColor: "#f8f9fa",
-                borderRadius: "50%", cursor: "pointer"}}>
-              <img
-                src={logotritech}
-                alt="Logo"
-                style={{
-                  width: "180px",
-                  height: "180px",
-                  objectFit: "contain"}}/></div>
-                      </div>
-
-          {/* COMPANY */}
-          <div className="col-md-3 mb-4">
-            <h6 className="fw-bold mb-3">COMPANY</h6>
-            <p className="mb-2">How it works</p>
-            <p className="mb-2">Pricing</p>
-            <p className="mb-0">Demo</p>
-          </div>
-
-          {/* RESOURCES */}
-          <div className="col-md-3 mb-4">
-            <h6 className="fw-bold mb-3">RESOURCES</h6>
-            <p className="mb-2">Blog post name goes here</p>
-            <p className="mb-2">Blog post name goes here</p>
-            <p className="mb-2">Blog post name goes here</p>
-            <p className="mb-0">See all resources</p>
-          </div>
-
-          {/* ABOUT */}
-          <div className="col-md-3 mb-4">
-            <h6 className="fw-bold mb-3">ABOUT</h6>
-            <p className="mb-2">Terms & Conditions</p>
-            <p className="mb-0">Privacy Policy</p>
-          </div>
-
+    <footer class=" rounded border border-default ">
+        <div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <a href="#" class="flex  no-underline items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
+                    <img src="public/Logo.png" class="h-7" alt="logo tritech" />
+                    <span class="text-black text-heading  font-semibold self-center text-2xl whitespace-nowrap">Tritech</span>
+                </a>
+                <ul class="flex flex-wrap items-center mb-6 text-sm font-medium text-body sm:mb-0">
+                    <li>
+                        <a href="#" class="text-black hover:underline no-underline font-semibold me-4 md:me-6">À propos</a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-black hover:underline no-underline font-semibold me-4 md:me-6">Mention légale</a>
+                    </li>
+                    <li>
+                        <a href="#" class="text-black hover:underline no-underline font-semibold">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <hr class="my-6 border-default sm:mx-auto lg:my-8" />
+            <span class="block text-sm text-body sm:text-center">© 2025 <a href="#/" class="text-[#9F00D7] no-underline hover:underline">Tritech</a>. Tout droit reservé</span>
         </div>
-
-        {/* COPYRIGHT */}
-        <div className="text-center text-muted mt-4">
-          <small>Copyright © 2022 Company name</small>
-        </div>
-      </div>
     </footer>
   );
 }
