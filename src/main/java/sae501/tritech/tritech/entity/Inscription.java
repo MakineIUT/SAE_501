@@ -18,7 +18,6 @@ public class Inscription {
     private String statut; // En attente, Validée, Annulée, Payée
 
 
-
     public Inscription() {
     }
 

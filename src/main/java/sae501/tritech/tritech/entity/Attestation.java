@@ -100,12 +100,6 @@ public class Attestation {
         return "OK";
     }
 
-    public byte[] telechargerPDF() {
-        // Implémenté dans AttestationService avec iText ou autre
-        return null;
-    }
-
-
     //Relations
     @ManyToOne
     @JoinColumn(name = "id_apprenant", nullable = false)

@@ -21,7 +21,7 @@ public class Paiement {
     private LocalDateTime datePaiement;
 
     @Column(length = 50)
-    private String statut; // En attente, Validé, Refusé, Remboursé
+    private String statut; // En attente, Validé
 
     @Column(name = "reference_transaction",unique = true)
     private String referenceTransaction;

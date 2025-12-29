@@ -9,27 +9,26 @@ public class Utilisateur {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUtilisateur;
 
-
     private String nom;
 
-
+    
     private String prenom;
 
     @Column(nullable = false, unique = true) //obligatoire et unique
     private String email;
 
     @Column(nullable = false)
-    private String motDePasse;
+    private int motDePasse;
 
     @Column(length = 10)
-    private String telephone;
+    private int telephone;
 
     //constructeur vide
     public Utilisateur(){
 
     }
 
-    public Utilisateur(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, String telephone) {
+    public Utilisateur(Long idUtilisateur, String nom, String prenom, String email, int motDePasse, int telephone) {
         this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.prenom = prenom;
@@ -70,41 +69,40 @@ public class Utilisateur {
         this.email = email;
     }
 
-    public String getMotDePasse() {
+    public int getMotDePasse() {
         return motDePasse;
     }
 
-    public void setMotDePasse(String motDePasse) {
+    public void setMotDePasse(int motDePasse) {
         this.motDePasse = motDePasse;
     }
 
-    public String getTelephone() {
+    public int getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone) {
+    public void setTelephone(int telephone) {
         this.telephone = telephone;
     }
 
 
-    public String inscriptionCompte(String nom, String prenom, String telephone, String email, String motDePasse) {
+    public String inscriptionCompte(String nom, String prenom, int telephone, String email, int motDePasse) {
         this.nom = nom;
         this.prenom = prenom;
         this.telephone = telephone;
         this.email = email;
         this.motDePasse = motDePasse;
 
-        //remplire les champs obligatoires
-        if (this.email != null && !this.email.isEmpty() && this.motDePasse != null) {
+        // champ obligatoire
+        if (this.email != null && !this.email.isEmpty() && this.motDePasse != 0) {
             return "Inscription réussie pour " + this.prenom + " " + this.nom + ". Un mail de confirmation a été envoyé à " + this.email;
         } else {
             return "Erreur : Veuillez renseigner tous les champs obligatoires.";
         }
     }
 
-
     public boolean connexion(String email, String password) {
-        return this.email.equals(email) && this.motDePasse.equals(password);
+        return this.email.equals(email) && this.motDePasse == Integer.parseInt(password);
     }
 
     public void deconnexion(HttpSession session) {

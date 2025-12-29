@@ -76,7 +76,6 @@ public class Apprenant extends Utilisateur {
         this.presences = presences;
     }
 
-
     public List<Note> voirNotes() {
         return this.notes;
     }
