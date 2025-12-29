@@ -22,95 +22,45 @@ const handleNavigation = (page) => {
 
   return (
     <>
+      <div className="mt-0 flex items-center justify-center  py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+        <div className="mt-0 container mx-auto mb-32 px-4">
+          <div className="mt-0 flex justify-center">
+            <div className="mt-0 w-full max-w-5xl">
+              {/*Titre*/}
+              <div className=" text-center text-white my-5">
+                <h1 className=" font-bold text-6xl mb-4 tracking-tight text-balance">Title Copy Goes Here</h1>
+                <p className="py-3 mt-8 text-lg font-normal text-pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. </p>
+                <button className="text-md text-black text-uppercase bg-white rounded-full font-semibold px-4 py-2">
+                  Commencer
+                </button>
+              </div>
 
-      <div className="min-vh-100 bg-light">
-
-        {/* HERO */}
-        <div className="container text-center py-5">
-          <h1 className="display-4 fw-bold">Tritech</h1>
-          <p className="text-muted my-4">
-            Formez-vous aujourd’hui aux compétences de demain
-          </p>
-          <button
-            onClick={() => handleNavigation("commencer")}
-            className="btn btn-dark btn-lg rounded-pill px-4"
-          >
-            COMMENCER
-          </button>
-        </div>
-
-        {/* FORMATIONS */}
-        <div className="container pb-5">
-          <div 
-  style={{
-    backgroundColor: "rgba(242, 231, 249, 1)",
-    borderRadius: "26px",
-    padding: "80px",
-    boxShadow: "0 12px 35px rgba(0, 0, 0, 0.12)"
-  }}>
-            <h2 className="text-center fw-bold mb-3">
-              Nos formations
-            </h2>
-            <p className="text-center text-muted mb-4"  style={{marginTop: "40px"}}>
-Découvrez nos formations professionnelles conçues pour développer vos compétences et vous accompagner vers la réussite.
-Chaque parcours est pensé pour allier théorie, pratique et accompagnement personnalisé.            </p>
-
-            <div className="row g-4" style={{marginTop: "40px"}}>
-  {formations.map((formation) => (
-    <div key={formation.id} className="col-md-6">
-      <div
-        className="d-flex"
-  style={{
-    backgroundColor: "#ffffff",
-    borderRadius: "18px",
-    boxShadow: "0 8px 20px rgba(0, 0, 0, 0.17)",
-    height: "150px",
-    overflow: "hidden"
-  }}
-      >
-        {/* Bloc couleur à gauche */}
-        <div
-          style={{
-            backgroundColor: formation.color,
-            width: "150px",
-            height: "100%"
-                    }}
-        ></div>
-
-        {/* Texte */}
-        <div className="ms-4 flex-grow-1 d-flex flex-column pt-3">
-  <h4 className="mb-1">
-    {formation.nom}
-  </h4>
-
-  <p className="mb-0 fw-medium">
-    {formation.description}
-  </p>
-</div>
-
-        {/* Bouton flèche */}
-        <button
-  onClick={() => handleNavigation("formations")}
-  className="btn d-flex align-items-center justify-content-center align-self-end mb-3 me-3"
-  style={{
-    width: "45px",
-    height: "45px",
-    borderRadius: "50%",
-    backgroundColor: formation.color,
-    color: "#fff"
-  }}
->
-  ↗
-</button>
-      </div>
-    </div>
-  ))}
-</div>
-
+              {/*Card hero */}
+              <div className="p-6 shadow-2xl rounded-[2rem] bg-gradient-to-tr from-white/5 to-white/20 backdrop-blur-[1px]">
+                 {/*Titre et texte*/}
+                  <div className="text-center text-[#D4ACE3] ">
+                    <h3 className="text-4xl py-2">Nos formations</h3>
+                    <p className="text-xs py-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. </p>
+                  </div>
+                  
+                  {/*Grille formations*/}
+                  <div>
+                    {/*rangé de 2 formations*/}
+                    <div className="flex flex-row justify-center ">
+                      <div className="flex flex-col"><h5>Dev web</h5></div>
+                      <div className="flex flex-col"><h5>Cyber sécurité</h5></div>
+                    </div>
+                    {/*rangé de 2 formations*/}
+                    <div className="flex flex-row justify-center">
+                      <div className="flex flex-col"><h5>design</h5></div>
+                      <div className="flex flex-col"><h5>hébergement</h5></div>
+                    </div>
+                  </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
     </>
   );
 }

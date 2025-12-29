@@ -18,13 +18,13 @@ const Connexion = () => {
     };
 
     return (
-        <div className="flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
-            <div className="container mx-auto px-4">
+        <div className="mt-0 flex items-center justify-center  py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+            <div className="container mx-auto mb-32 px-4">
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
                         {/* Carte principale */}
                         <div 
-                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] mb-12 overflow-hidden bg-white bg-center bg-cover"
+                            className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
                             style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
                         >
                             
