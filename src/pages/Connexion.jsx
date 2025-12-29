@@ -19,7 +19,7 @@ const Connexion = () => {
 
     return (
         <div className="mt-0 flex items-center justify-center  py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
-            <div className="container mx-auto mb-32 px-4">
+            <div className="container mx-auto mb-52 px-4">
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
                         {/* Carte principale */}

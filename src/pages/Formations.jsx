@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import FormationCard from "../components/FormationCard";
 import Session from "../components/Session";
 import { useNavigate } from "react-router-dom";
-import fondclassforma from "../assets/fondclassforma.jpg";
+import fondclassforma from "/fondclassforma.jpg";
 
 export default function Formations() {
   const sliderRef = useRef(null);

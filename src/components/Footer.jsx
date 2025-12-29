@@ -24,7 +24,7 @@ function Footer() {
                     </li>
                 </ul>
             </div>
-            <hr class="my-6 border-default sm:mx-auto lg:my-8" />
+            <hr class="my-6 border-default dark:border-neutral-50 sm:mx-auto lg:my-8" />
             <span class=" block text-sm  dark:text-white sm:text-center">© 2025 <a href="#/" class="text-[#9F00D7] no-underline hover:underline">Tritech</a> Tout droit reservé</span>
         </div>
     </footer>

@@ -20,7 +20,7 @@ function Accueil() {
   return (
     <>
       <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-neutral-50 dark:bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
-        <div className="container mx-auto mb-32 px-4">
+        <div className="container mx-auto mb-52 px-4">
           <div className="flex justify-center">
             <div className="w-full max-w-5xl">
               
@@ -36,7 +36,7 @@ function Accueil() {
               </div>
 
               {/* Section Nos Formations */}
-              <div className="mt-16 p-10 lg:p-16 shadow-2xl rounded-[3rem] bg-gradient-to-b from-[#FDFBFE] to-[#F4EBFA] dark:bg-gradient-to-tr dark:from-white/5 dark:to-white/15 dark:backdrop-blur-md dark:border dark:border-[#8700c2]/15">
+              <div className="mt-16 p-10 lg:p-16 shadow-2xl rounded-[3rem] bg-gradient-to-b from-[#FDFBFE] to-[#F4EBFA] dark:bg-gradient-to-tr dark:from-white/5 dark:to-white/15 dark:backdrop-blur-md dark:border dark:border-[#8700c2]/5">
                 
                 <div className="text-center text-neutral-950 dark:text-[#E7D1F0] mb-12">
                   <h3 className="text-4xl font-bold mb-4">Nos formations</h3>
