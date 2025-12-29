@@ -19,26 +19,26 @@ function Accueil() {
 
   return (
     <>
-      <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+      <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-neutral-50 dark:bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
         <div className="container mx-auto mb-32 px-4">
           <div className="flex justify-center">
             <div className="w-full max-w-5xl">
               
               {/* Titre principal */}
-              <div className="text-center text-white my-5">
+              <div className="text-center text-neutral-950 dark:text-neutral-50 my-5">
                 <h1 className="font-bold text-6xl mb-4 tracking-tight">Title Copy Goes Here</h1>
                 <p className="py-3 mt-8 text-lg font-normal opacity-90">
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
                 </p>
-                <button className="mt-4 text-xs tracking-widest text-black uppercase bg-white rounded-full font-bold px-8 py-3 shadow-lg hover:bg-gray-100 transition-all">
+                <button className="mt-4 text-xs tracking-widest text-neutral-50 bg-neutral-950  dark:text-neutral-950 uppercase dark:bg-neutral-50 rounded-full font-bold px-8 py-3 shadow-lg hover:text-[#CA00DF] hover:bg-gray-100 transition-all">
                   Commencer
                 </button>
               </div>
 
               {/* Section Nos Formations */}
-              <div className="mt-16 p-10 lg:p-16 shadow-2xl rounded-[3rem] bg-gradient-to-tr from-white/5 to-white/15 backdrop-blur-md border border-[#8700c2]/15">
+              <div className="mt-16 p-10 lg:p-16 shadow-2xl rounded-[3rem] bg-gradient-to-b from-[#FDFBFE] to-[#F4EBFA] dark:bg-gradient-to-tr dark:from-white/5 dark:to-white/15 dark:backdrop-blur-md dark:border dark:border-[#8700c2]/15">
                 
-                <div className="text-center text-white mb-12">
+                <div className="text-center text-neutral-950 dark:text-[#E7D1F0] mb-12">
                   <h3 className="text-4xl font-bold mb-4">Nos formations</h3>
                   <p className="text-sm opacity-70 max-w-2xl mx-auto">
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
@@ -51,7 +51,7 @@ function Accueil() {
                     <div 
                       key={f.id}
                       onClick={() => handleNavigation(f.link)}
-                      className="flex overflow-hidden rounded-2xl bg-white/15 hover:bg-white/25 transition-all cursor-pointer group "
+                      className="flex overflow-hidden rounded-2xl bg-neutral-50  dark:bg-neutral-50/15 dark:hover:bg-neutral-50/25 transition-all cursor-pointer group "
                     >
                       {/* Carré de couleur */}
                       <div 
@@ -59,11 +59,11 @@ function Accueil() {
                         style={{ backgroundColor: f.color }}
                       />
                       
-                      {/* Texte et flèche */}
+                      {/* Texte */}
                       <div className="flex flex-col justify-between p-4 md:p-6 flex-grow bg-white/5 relative">
                         <div>
-                          <h5 className="text-white font-bold text-sm md:text-base mb-1">{f.nom}</h5>
-                          <p className="text-white/60 text-[10px] md:text-xs leading-snug">
+                          <h5 className="text-neutral-900 dark:text-neutral-50 font-bold text-sm md:text-base mb-1">{f.nom}</h5>
+                          <p className="text-neutral-800 dark:text-neutral-50/60 text-[10px] md:text-xs leading-snug">
                             {f.description}
                           </p>
                         </div>
