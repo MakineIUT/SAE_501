@@ -1,61 +1,77 @@
 import Header from "../components/Header.jsx";
 import Footer from "../components/Footer.jsx";
-import Formations from "./Formations.jsx";
 import { useNavigate } from "react-router-dom";
 
-function Accueil() {
 
+function Accueil() {
   const navigate = useNavigate();
 
-const handleNavigation = (page) => {
-  console.log(`Navigation vers: ${page}`);
-  navigate(`/${page}`);
-};
-
+  const handleNavigation = (page) => {
+    navigate(`/${page}`);
+  };
 
   const formations = [
-  { id: 1, color: "#c78fefff", link: "formation-1", nom: "Développement Web", description: "Créer des sites et applications modernes" },
-  { id: 2, color: "#7CF291", link: "formation-2", nom: "Cybersécurité", description: "Protéger les sytèmes et les données"},
-  { id: 3, color: "#5B82F3", link: "formation-3", nom: "Data & Analyse", description: "Analyser et exploiter les données"},
-  { id: 4, color: "#F6A55A", link: "formation-4", nom: "UI / UX Design", description: "Concevoir des interfaces centrées utilisateur"}
-];
+    { id: 1, color: "#c78fefff", link: "formation-1", nom: "Développement Web", description: "Lorem ipsum dolor sit amet, adipiscing" },
+    { id: 2, color: "#7CF291", link: "formation-2", nom: "Cybersécurité", description: "Lorem ipsum dolor sit amet, adipiscing"},
+    { id: 3, color: "#5B82F3", link: "formation-3", nom: "Data & Analyse", description: "Lorem ipsum dolor sit amet, adipiscing"},
+    { id: 4, color: "#F6A55A", link: "formation-4", nom: "UI / UX Design", description: "Lorem ipsum dolor sit amet, adipiscing"}
+  ];
 
   return (
     <>
-      <div className="mt-0 flex items-center justify-center  py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
-        <div className="mt-0 container mx-auto mb-32 px-4">
-          <div className="mt-0 flex justify-center">
-            <div className="mt-0 w-full max-w-5xl">
-              {/*Titre*/}
-              <div className=" text-center text-white my-5">
-                <h1 className=" font-bold text-6xl mb-4 tracking-tight text-balance">Title Copy Goes Here</h1>
-                <p className="py-3 mt-8 text-lg font-normal text-pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. </p>
-                <button className="text-md text-black text-uppercase bg-white rounded-full font-semibold px-4 py-2">
+      <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
+        <div className="container mx-auto mb-32 px-4">
+          <div className="flex justify-center">
+            <div className="w-full max-w-5xl">
+              
+              {/* Titre principal */}
+              <div className="text-center text-white my-5">
+                <h1 className="font-bold text-6xl mb-4 tracking-tight">Title Copy Goes Here</h1>
+                <p className="py-3 mt-8 text-lg font-normal opacity-90">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
+                </p>
+                <button className="mt-4 text-xs tracking-widest text-black uppercase bg-white rounded-full font-bold px-8 py-3 shadow-lg hover:bg-gray-100 transition-all">
                   Commencer
                 </button>
               </div>
 
-              {/*Card hero */}
-              <div className="p-6 shadow-2xl rounded-[2rem] bg-gradient-to-tr from-white/5 to-white/20 backdrop-blur-[1px]">
-                 {/*Titre et texte*/}
-                  <div className="text-center text-[#D4ACE3] ">
-                    <h3 className="text-4xl py-2">Nos formations</h3>
-                    <p className="text-xs py-2">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique. </p>
-                  </div>
-                  
-                  {/*Grille formations*/}
-                  <div>
-                    {/*rangé de 2 formations*/}
-                    <div className="flex flex-row justify-center ">
-                      <div className="flex flex-col"><h5>Dev web</h5></div>
-                      <div className="flex flex-col"><h5>Cyber sécurité</h5></div>
+              {/* Section Nos Formations */}
+              <div className="mt-16 p-10 lg:p-16 shadow-2xl rounded-[3rem] bg-gradient-to-tr from-white/5 to-white/15 backdrop-blur-md border border-[#8700c2]/15">
+                
+                <div className="text-center text-white mb-12">
+                  <h3 className="text-4xl font-bold mb-4">Nos formations</h3>
+                  <p className="text-sm opacity-70 max-w-2xl mx-auto">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
+                  </p>
+                </div>
+                
+                {/* Grille des formations */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+                  {formations.map((f) => (
+                    <div 
+                      key={f.id}
+                      onClick={() => handleNavigation(f.link)}
+                      className="flex overflow-hidden rounded-2xl bg-white/15 hover:bg-white/25 transition-all cursor-pointer group "
+                    >
+                      {/* Carré de couleur */}
+                      <div 
+                        className="w-24 md:w-32 flex-shrink-0" 
+                        style={{ backgroundColor: f.color }}
+                      />
+                      
+                      {/* Texte et flèche */}
+                      <div className="flex flex-col justify-between p-4 md:p-6 flex-grow bg-white/5 relative">
+                        <div>
+                          <h5 className="text-white font-bold text-sm md:text-base mb-1">{f.nom}</h5>
+                          <p className="text-white/60 text-[10px] md:text-xs leading-snug">
+                            {f.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    {/*rangé de 2 formations*/}
-                    <div className="flex flex-row justify-center">
-                      <div className="flex flex-col"><h5>design</h5></div>
-                      <div className="flex flex-col"><h5>hébergement</h5></div>
-                    </div>
-                  </div>
+                  ))}
+                </div>
+
               </div>
             </div>
           </div>
