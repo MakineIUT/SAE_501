@@ -1,11 +1,8 @@
 package sae501.tritech.tritech.entity;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpSession;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@Table(name = "utilisateurs")
+@MappedSuperclass
 public class Utilisateur {
 
     @Id
@@ -13,9 +10,11 @@ public class Utilisateur {
     private Long idUtilisateur;
 
     private String nom;
+
+
     private String prenom;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true) //obligatoire et unique
     private String email;
 
     @Column(nullable = false)
@@ -24,8 +23,10 @@ public class Utilisateur {
     @Column(length = 10)
     private int telephone;
 
-    // Constructeurs
-    public Utilisateur() {}
+    //constructeur vide
+    public Utilisateur(){
+
+    }
 
     public Utilisateur(Long idUtilisateur, String nom, String prenom, String email, String motDePasse, int telephone) {
         this.idUtilisateur = idUtilisateur;
@@ -36,20 +37,6 @@ public class Utilisateur {
         this.telephone = telephone;
     }
 
-    // ✅ AJOUTEZ CETTE MÉTHODE pour identifier le rôle
-    @JsonProperty("role")
-    public String getRole() {
-        if (this instanceof Admin) {
-            return "ADMIN";
-        } else if (this instanceof Formateur) {
-            return "FORMATEUR";
-        } else if (this instanceof Apprenant) {
-            return "APPRENANT";
-        }
-        return "UTILISATEUR";
-    }
-
-    // Getters et setters existants
     public Long getIdUtilisateur() {
         return idUtilisateur;
     }
@@ -98,6 +85,7 @@ public class Utilisateur {
         this.telephone = telephone;
     }
 
+
     public String inscriptionCompte(String nom, String prenom, int telephone, String email, String motDePasse) {
         this.nom = nom;
         this.prenom = prenom;
@@ -105,8 +93,9 @@ public class Utilisateur {
         this.email = email;
         this.motDePasse = motDePasse;
 
+        // champ obligatoire
         if (this.email != null && !this.email.isEmpty() && this.motDePasse != null && !this.motDePasse.isEmpty()) {
-            return "Inscription réussie pour " + this.prenom + " " + this.nom;
+            return "Inscription réussie pour " + this.prenom + " " + this.nom + ". Un mail de confirmation a été envoyé à " + this.email;
         } else {
             return "Erreur : Veuillez renseigner tous les champs obligatoires.";
         }
@@ -117,9 +106,10 @@ public class Utilisateur {
     }
 
     public void deconnexion(HttpSession session) {
+        // Invalider la session actuelle de l'utilisateur
         if (session != null) {
             session.invalidate();
-            System.out.println("L'utilisateur " + this.email + " a été déconnecté.");
+        System.out.println("L'utilisateur " + this.email + " a été déconnecté.");
         }
     }
 }
