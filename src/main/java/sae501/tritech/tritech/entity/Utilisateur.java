@@ -2,7 +2,9 @@ package sae501.tritech.tritech.entity;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpSession;
 
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED) // Indispensable pour gérer les rôles (Apprenant, etc.)
+@Table(name = "utilisateurs")
 public class Utilisateur {
 
     @Id
