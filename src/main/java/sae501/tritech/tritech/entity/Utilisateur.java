@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "utilisateurs")
 public class Utilisateur {
 
