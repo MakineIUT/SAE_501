@@ -61,7 +61,7 @@ const Inscription = () => {
                                             name="email"
                                             value={formData.email}
                                             onChange={handleChange}
-                                            className=" w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
+                                            className=" w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/35 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
                                             placeholder="Email"
                                             required
                                         />
@@ -74,7 +74,7 @@ const Inscription = () => {
                                             name="password"
                                             value={formData.password}
                                             onChange={handleChange}
-                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            className="w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/35 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
                                             placeholder="Mot de passe"
                                             required
                                         />
@@ -87,7 +87,7 @@ const Inscription = () => {
                                             name="nom"
                                             value={formData.nom}
                                             onChange={handleChange}
-                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            className="w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/35 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
                                             placeholder="Nom"
                                         />
                                     </div>
@@ -99,7 +99,7 @@ const Inscription = () => {
                                             name="prenom"
                                             value={formData.prenom}
                                             onChange={handleChange}
-                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1] border-none focus:ring-2 focus:ring-purple-600 outline-none text-black placeholder-gray-500"
+                                            className="w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/35 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
                                             placeholder="Prénom"
                                         />
                                     </div>
