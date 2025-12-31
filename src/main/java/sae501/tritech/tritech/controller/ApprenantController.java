@@ -6,6 +6,8 @@ import sae501.tritech.tritech.entity.*;
 import sae501.tritech.tritech.service.ApprenantService;
 import sae501.tritech.tritech.repository.*;
 import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @RestController
 @RequestMapping("/api/apprenants")
@@ -26,6 +28,17 @@ public class ApprenantController {
 
     @Autowired
     private InscriptionRepository inscriptionRepository;
+
+    @PostMapping("/inscription") // L'URL sera donc /api/apprenants/inscription
+    public ResponseEntity<?> creerApprenant(@RequestBody Apprenant apprenant) {
+        try {
+            // Le service doit sauvegarder l'apprenant (qui est aussi un utilisateur)
+            Apprenant nouveau = apprenantRepository.save(apprenant);
+            return ResponseEntity.ok(nouveau);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Erreur lors de la création : " + e.getMessage());
+        }
+    }
 
     @PostMapping("/{idApprenant}/inscriptions")
     public ResponseEntity<String> inscrireFormation(
