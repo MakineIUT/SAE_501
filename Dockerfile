@@ -1,12 +1,8 @@
-FROM gradle:8.5-jdk17 AS build
+FROM eclipse-temurin:25-jdk-alpine
 WORKDIR /app
-COPY build.gradle settings.gradle ./
-COPY gradle ./gradle
-COPY src ./src
-RUN gradle clean build -x test --no-daemon
+COPY . .
+RUN chmod +x gradlew
+RUN ./gradlew clean build -x test --no-daemon
 
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+CMD ["java", "-jar", "build/libs/tritech-0.0.1-SNAPSHOT.jar"]
