@@ -42,7 +42,7 @@ const Connexion = () => {
                             {/* Côté Droit - Formulaire de connexion */}
                             <div className="md:w-1/2 p-10 lg:p-16 ">
                                 <div className="mb-6">
-                                    <h2 className="text-3xl font-bold mb-0 text-neutral-700">Connexion</h2>
+                                    <h2 className="text-3xl font-bold mb-0 text-black">Connexion</h2>
                                 </div>
 
                                 <form onSubmit={handleSubmit} className="space-y-4 w-80">
@@ -54,7 +54,7 @@ const Connexion = () => {
                                             name="email"
                                             value={credentials.email}
                                             onChange={handleChange}
-                                            className="w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/35 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
                                             placeholder="Email"
                                             required
                                         />
@@ -67,7 +67,7 @@ const Connexion = () => {
                                             name="password"
                                             value={credentials.password}
                                             onChange={handleChange}
-                                            className="w-full px-5 py-3 rounded-xl bg-[#ffffff]  border-neutral-400/50 border-2 focus:border-purple-600 focus:ring-1 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-neutral-400"
+                                            className="w-full px-5 py-3 rounded-xl bg-[#F1F1F1]  focus:ring-2 focus:ring-purple-600 focus:outline focus:outline-purple-600 text-black placeholder-gray-500"
                                             placeholder="Mot de passe"
                                             required
                                         />
@@ -105,7 +105,7 @@ const Connexion = () => {
                                             <div className="flex-grow border-t-2 border-[#A2A2A2] rounded-lg"></div>
                                         </div>
                                         {/*bouton d'inscription*/}
-                                        <a href ="/Inscription" className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-[3px]  border-[#A2A2A2] hover:border-[#9F00D7] hover:text-[#9F00D7] transition-all transform active:scale-[0.98]">
+                                        <a href ="/Inscription" className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-2 border-[#A2A2A2] hover:border-[#9F00D7] hover:border-4 hover:text-[#9F00D7] transition-all transform active:scale-[0.98]">
                                             S'inscrire
                                         </a>
                                     </div>
