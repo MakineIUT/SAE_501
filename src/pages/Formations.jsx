@@ -12,7 +12,7 @@ export default function Formations() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState(null);
 
-  // Extended data structure matching the new design requirements
+  // il faudra adapter le code pour qu'il corresponde à la BDD
   const formations = [
     {
       id: 1,
@@ -91,8 +91,7 @@ export default function Formations() {
     }
 
     const percent = slider.scrollLeft / maxScroll;
-    const maxTrackScroll = track.offsetWidth - 24; // 24 is roughly the handle width + margins if handled strictly
-    // Simpler math assuming handle width is ~18px
+    const maxTrackScroll = track.offsetWidth - 24;
     setDragX(percent * (track.offsetWidth - 18));
   };
 

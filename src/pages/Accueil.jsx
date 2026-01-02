@@ -11,7 +11,7 @@ function Accueil() {
   };
 
   const formations = [
-    { id: 1, color: "#c78fefff", link: "formation-1", nom: "Développement Web", description: "Lorem ipsum dolor sit amet, adipiscing" },
+    { id: 1, color: "#c78fefff", link: "formation-1", nom: "Développement Web", description: "Développez de sites et applications interractives" },
     { id: 2, color: "#7CF291", link: "formation-2", nom: "Cybersécurité", description: "Lorem ipsum dolor sit amet, adipiscing" },
     { id: 3, color: "#5B82F3", link: "formation-3", nom: "Data & Analyse", description: "Lorem ipsum dolor sit amet, adipiscing" },
     { id: 4, color: "#F6A55A", link: "formation-4", nom: "UI / UX Design", description: "Lorem ipsum dolor sit amet, adipiscing" }
@@ -26,9 +26,14 @@ function Accueil() {
 
               {/* Titre principal */}
               <div className="text-center text-neutral-950 dark:text-neutral-50 my-5">
-                <h1 className="font-bold text-6xl mb-4 tracking-tight">Title Copy Goes Here</h1>
-                <p className="py-3 mt-8 text-lg font-normal opacity-90">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
+                <h1 className="font-bold text-6xl md:text-7xl mb-6 tracking-tight leading-tight">
+                  Avec Tritech <br /> apprenez
+                  <span className="ml-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">
+                    à l'infini
+                  </span>
+                </h1>
+                <p className="py-3 mt-4 text-xl font-medium opacity-80 max-w-2xl mx-auto leading-relaxed">
+                  Boostez votre carrière avec nos formations. Maîtrisez les compétences tech de demain, grâce à des experts passionnés.
                 </p>
                 <button className="mt-4 text-xs tracking-widest text-neutral-50 bg-neutral-950  dark:text-neutral-950 uppercase dark:bg-neutral-50 rounded-full font-bold px-8 py-3 shadow-lg hover:text-[#CA00DF] hover:bg-gray-100 transition-all">
                   Commencer
@@ -41,7 +46,7 @@ function Accueil() {
                 <div className="text-center text-neutral-950 dark:text-[#E7D1F0] mb-12">
                   <h3 className="text-4xl font-bold mb-4">Nos formations</h3>
                   <p className="text-sm opacity-70 max-w-2xl mx-auto">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.
+                    Développez vos compétences dans des domaines variés. Offrez vous un nouveau parcours professionnel.
                   </p>
                 </div>
 
