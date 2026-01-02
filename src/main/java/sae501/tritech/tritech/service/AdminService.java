@@ -20,8 +20,6 @@ public class AdminService {
     @Autowired
     private FormationRepository formationRepository;
 
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
 
     @Autowired
     private AdminRepository adminRepository;
@@ -60,6 +58,5 @@ public class AdminService {
         utilisateurs.addAll(apprenantRepository.findAll());
         utilisateurs.addAll(formateurRepository.findAll());
         return utilisateurs;
-
     }
 }
