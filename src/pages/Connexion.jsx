@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { authService } from '../services/authService';
 
 const Connexion = () => {
     // État pour gérer les identifiants
@@ -15,6 +16,16 @@ const Connexion = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Tentative de connexion avec :", credentials);
+
+        // SIMULATION : On connecte tout le monde en tant qu'apprenant par défaut
+        // (Sauf si l'email contient "admin", petit easter egg pour tester facilement)
+        if (credentials.email.includes("admin")) {
+            authService.setMockRole('admin');
+        } else if (credentials.email.includes("formateur")) {
+            authService.setMockRole('formateur');
+        } else {
+            authService.setMockRole('apprenant');
+        }
     };
 
     return (
@@ -23,11 +34,11 @@ const Connexion = () => {
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
                         {/* Carte principale */}
-                        <div 
+                        <div
                             className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
                             style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
                         >
-                            
+
                             {/* Côté Gauche - Message de bienvenue (Inversé ou identique selon ton choix) */}
                             <div className="md:w-1/2 flex flex-col p-10 lg:p-16 text-white">
                                 <h2 className="text-5xl lg:text-6xl font-bold mb-6 text-uppercase">Bienvenue</h2>
@@ -49,7 +60,7 @@ const Connexion = () => {
                                     {/* Email */}
                                     <div>
                                         <input
-                                            
+
                                             type="email"
                                             name="email"
                                             value={credentials.email}
@@ -75,7 +86,7 @@ const Connexion = () => {
                                     {/*Se souvenir de moi & mpd oublié*/}
                                     <div className=" flex items-center justify-between mt-4" >
                                         <div className="flex items-center">
-                                            <input id="souvenir" name="souvenir" type="checkbox" className="accent-purple-600/25 hover:accent-purple-600 h-4 w-4 border-gray-500 focus:ring-purple-600  "/>
+                                            <input id="souvenir" name="souvenir" type="checkbox" className="accent-purple-600/25 hover:accent-purple-600 h-4 w-4 border-gray-500 focus:ring-purple-600  " />
                                             <label for="remember_me" className='ml-2 text-xs text-gray-500 font-bold' >
                                                 Se souvenir de moi
                                             </label>
@@ -105,7 +116,7 @@ const Connexion = () => {
                                             <div className="flex-grow border-t-2 border-[#A2A2A2] rounded-lg"></div>
                                         </div>
                                         {/*bouton d'inscription*/}
-                                        <a href ="/Inscription" className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-2 border-[#A2A2A2] hover:border-[#9F00D7] hover:border-4 hover:text-[#9F00D7] transition-all transform active:scale-[0.98]">
+                                        <a href="/Inscription" className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-2 border-[#A2A2A2] hover:border-[#9F00D7] hover:border-4 hover:text-[#9F00D7] transition-all transform active:scale-[0.98]">
                                             S'inscrire
                                         </a>
                                     </div>
