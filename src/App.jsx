@@ -10,7 +10,7 @@ import DashboardFormateur from "./pages/DashboardFormateur.jsx";
 import FormationDetail from "./pages/FormationDetail.jsx";
 import Formations from "./pages/Formations.jsx";
 import Inscription from "./pages/Inscription.jsx";
-// import Paiement from "./pages/Paiement.jsx";
+import Paiement from "./pages/Paiement.jsx";
 // import Panier from "./pages/Panier.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
@@ -25,6 +25,7 @@ function App() {
     <Header />
 
     <Routes>
+      <Route path='/' element={<Accueil />} />
       <Route path='/accueil' element={<Accueil />} />
       <Route path='/connexion' element={<Connexion />} />
       <Route path='/inscription' element={<Inscription />} />
@@ -34,8 +35,9 @@ function App() {
       <Route path='/dashboard/admin' element={<DashboardAdmin />} />
       <Route path='/dashboard/formateur' element={<DashboardFormateur />} />
       <Route path='/apropos' element={<Apropos />} />
+       <Route path='/paiement' element={<Paiement />} />
       {/* <Route path='/panier' element={<Panier />} />
-      <Route path='/paiement' element={<Paiement />} />
+     
       <Route path='/dashboard/admin' element={<DashboardAdmin />} /> */}
     </Routes>
 

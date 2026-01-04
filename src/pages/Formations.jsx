@@ -24,68 +24,106 @@ export default function Formations() {
     const fetchFormations = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_URL}/formations`);
+        
+        // Fetch avec un timeout pour éviter que ça bloque
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(`${API_URL}/formations`, {
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           throw new Error('Erreur lors de la récupération des formations');
         }
         
-        const data = await response.json();
+        // Lire le texte brut d'abord
+        const textData = await response.text();
         
-        // Enrichissement avec les sessions complètes
-        const enriched = await Promise.all(
-          data.map(async (f) => {
-            let sessions = [];
+        // Essayer de parser le JSON
+        let data;
+        try {
+          data = JSON.parse(textData);
+        } catch (parseError) {
+          console.error("Erreur de parsing JSON:", parseError);
+          data = [];
+        }
+        
+        // Enrichissement AVEC appel à l'API sessions
+        const enrichedPromises = data.map(async (f) => {
+          let sessions = [];
+          
+          try {
+            // Appel à l'API pour récupérer les sessions de cette formation
+            const sessionsResponse = await fetch(
+              `${API_URL}/sessions/formation/${f.idFormation}`
+            );
             
-            try {
-              const sessionsRes = await fetch(`${API_URL}/sessions/formation/${f.idFormation}`);
+            if (sessionsResponse.ok) {
+              const rawSessions = await sessionsResponse.json();
               
-              if (sessionsRes.ok) {
-                const sessionsData = await sessionsRes.json();
+              // Mapper les sessions au format attendu par FormationCard
+              sessions = rawSessions.map(session => {
+                // Formater la date
+                let dateFormatee = "Date non définie";
+                if (session.dateDebut) {
+                  const dateObj = new Date(session.dateDebut);
+                  dateFormatee = dateObj.toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                  });
+                }
                 
-                // Pour chaque session, récupérer les infos du lieu
-                sessions = await Promise.all(
-                  sessionsData.map(async (session) => {
-                    let ville = "Lieu non défini";
-                    
-                    if (session.id_lieu) {
-                      try {
-                        const lieuRes = await fetch(`${API_URL}/lieux/${session.id_lieu}`);
-                        if (lieuRes.ok) {
-                          const lieu = await lieuRes.json();
-                          ville = lieu.ville || "Lieu non défini";
-                        }
-                      } catch (err) {
-                        console.error("Erreur récupération lieu:", err);
-                      }
-                    }
-                    
-                    return {
-                      idSession: session.idSession,
-                      ville: ville,
-                      date: session.date_session ? new Date(session.date_session).toLocaleDateString('fr-FR') : "Date non définie",
-                      placesDisponibles: session.places_disponibles || 0
-                    };
-                  })
-                );
-              }
-            } catch (err) {
-              console.error("Erreur sessions pour formation", f.idFormation, err);
+                return {
+                  idSession: session.idSession,
+                  ville: session.lieu?.ville?.trim() || "Ville non spécifiée",
+                  date: dateFormatee,
+                  placesDisponibles: session.capaciteRestante || 0
+                };
+              });
             }
-            
-            return {
-              ...f,
-              sessions: sessions,
-              nom: f.intitule,
-              descriptionCourte: f.description,
-              image: fondclassforma
-            };
-          })
-        );
+          } catch (sessionError) {
+            console.error(`Erreur récupération sessions pour formation ${f.idFormation}:`, sessionError);
+            // Si l'API échoue, on laisse un tableau vide
+            sessions = [];
+          }
+          
+          return {
+            idFormation: f.idFormation,
+            sessions: sessions,
+            nom: f.intitule,
+            descriptionCourte: f.categorie || "Formation professionnelle",
+            prix: f.prix ? `${f.prix}€` : "250€",
+            niveau: f.niveau || "Intermédiaire",
+            duree: f.duree ? `${f.duree} semaines` : "1 jour",
+            capacite: "12 places par classe",
+            image: fondclassforma
+          };
+        });
         
+        const enriched = await Promise.all(enrichedPromises);
         setFormations(enriched);
+        
       } catch (err) {
         console.error("Erreur fetch formations:", err);
+        
+        // En cas d'erreur, on met des données par défaut pour que le site fonctionne
+        setFormations([
+          {
+            idFormation: 1,
+            nom: "Développement Web",
+            descriptionCourte: "Créer des sites et applications modernes",
+            prix: "250€",
+            niveau: "Intermédiaire",
+            duree: "8 jours",
+            capacite: "12 places par classe",
+            image: fondclassforma,
+            sessions: []
+          }
+        ]);
       } finally {
         setLoading(false);
       }

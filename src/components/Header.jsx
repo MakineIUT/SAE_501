@@ -1,23 +1,41 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logotritech from "../assets/logotritech.jpg";
-import { ChevronDown, User, Settings, LogOut, FileText } from 'lucide-react';
-import { authService } from "../services/authService";
-import { USE_MOCK_AUTH } from "../config";
 
 function Header() {
   const [ProfilOuvert, setProfilOuvert] = useState(false);
-  const [userRole, setUserRole] = useState(authService.getUserRole());
+  const [userRole, setUserRole] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Mettre à jour le rôle si on change manuellement (utile pour le rechargement)
+  // Charger l'utilisateur depuis localStorage
+  const loadUser = () => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        setCurrentUser(user);
+        setUserRole(user.role); // Le rôle est déjà dans user.role
+      } else {
+        setCurrentUser(null);
+        setUserRole(null);
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement de l'utilisateur:", error);
+      setCurrentUser(null);
+      setUserRole(null);
+    }
+  };
+
+  // Recharger à chaque changement de page
   useEffect(() => {
-    setUserRole(authService.getUserRole());
-  }, []);
+    loadUser();
+  }, [location]);
 
   const handleNavigation = (page) => {
     navigate(`/${page}`);
+    setProfilOuvert(false);
   };
 
   const toggleMenuprofil = () => {
@@ -25,13 +43,15 @@ function Header() {
   };
 
   const handleLogout = () => {
-    authService.logout();
+    localStorage.removeItem('user');
+    setUserRole(null);
+    setCurrentUser(null);
     setProfilOuvert(false);
+    navigate('/accueil');
   };
 
   // Logique de filtrage des liens selon le rôle
   const getFilteredMenuOptions = () => {
-    // Liens communs (ou pas de liens si pas besoin)
     let options = [];
 
     if (!userRole) {
@@ -41,23 +61,29 @@ function Header() {
         { label: "Inscription", link: "inscription" },
       ];
     } else {
-      // CONNECTÉ - Liens spécifiques au rôle
+      // CONNECTÉ - Afficher le nom de l'utilisateur
+      if (currentUser) {
+        options.push({
+          label: `${currentUser.prenom} ${currentUser.nom}`,
+          link: "",
+          isHeader: true
+        });
+      }
+
+      // Liens spécifiques au rôle
       switch (userRole) {
-        case 'apprenant':
+        case 'APPRENANT':
           options.push({ label: "Mon Dashboard", link: "dashboard/apprenant" });
           break;
-        case 'formateur':
+        case 'FORMATEUR':
           options.push({ label: "Espace Formateur", link: "dashboard/formateur" });
           break;
-        case 'admin':
+        case 'ADMIN':
           options.push({ label: "Administration", link: "dashboard/admin" });
           break;
         default:
-          // Rôle inconnu ?
           break;
       }
-      // Ajouter le bouton déconnexion à la fin pour tous les connectés
-      // Note: On peut le traiter à part, mais ici je l'ajoute comme option spéciale
     }
     return options;
   };
@@ -65,11 +91,13 @@ function Header() {
   const menuOptions = getFilteredMenuOptions();
 
   return (
-    <header style={{
-      background: "linear-gradient(90deg, rgba(69,0,171,1) 0%, rgba(135,0,194,1) 100%)",
-      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.25)"
-    }}
-      className="shadow">
+    <header 
+      style={{
+        background: "linear-gradient(90deg, rgba(69,0,171,1) 0%, rgba(135,0,194,1) 100%)",
+        boxShadow: "0 10px 25px rgba(0, 0, 0, 0.25)"
+      }}
+      className="shadow"
+    >
       <div className="container">
         <div className="d-flex align-items-center justify-content-between py-3">
 
@@ -79,13 +107,15 @@ function Header() {
             style={{ width: "60px", height: "60px", cursor: "pointer" }}
             onClick={() => handleNavigation("accueil")}
           >
-            <div className="d-flex align-items-center justify-content-center"
+            <div 
+              className="d-flex align-items-center justify-content-center"
               style={{
                 width: "64px",
                 height: "64px",
                 backgroundColor: "#fff",
                 borderRadius: "50%"
-              }}>
+              }}
+            >
               <img
                 src={logotritech}
                 alt="Logo"
@@ -93,37 +123,27 @@ function Header() {
                   width: "40px",
                   height: "40px",
                   objectFit: "contain"
-                }} /></div>
+                }} 
+              />
+            </div>
           </div>
 
           {/* Navigation */}
           <nav className="d-flex gap-5 align-items-center">
-            {/* DEBUG TOOL : Visible uniquement en mode TEST */}
-            {USE_MOCK_AUTH && (
-              <select
-                className="form-select form-select-sm bg-warning text-dark border-0 fw-bold"
-                style={{ maxWidth: '150px' }}
-                value={userRole || ""}
-                onChange={(e) => authService.setMockRole(e.target.value)}
-              >
-                <option value="">Mode: Visiteur</option>
-                <option value="apprenant">Mode: Apprenant</option>
-                <option value="formateur">Mode: Formateur</option>
-                <option value="admin">Mode: Admin</option>
-              </select>
-            )}
-
-            <button className="btn btn-link text-white text-decoration-none"
+            <button 
+              className="btn btn-link text-white text-decoration-none"
               onClick={() => handleNavigation("accueil")}
             >
               Accueil
             </button>
-            <button className="btn btn-link text-white text-decoration-none"
+            <button 
+              className="btn btn-link text-white text-decoration-none"
               onClick={() => handleNavigation("formations")}
             >
               Formations
             </button>
-            <button className="btn btn-link text-white text-decoration-none"
+            <button 
+              className="btn btn-link text-white text-decoration-none"
               onClick={() => handleNavigation("apropos")}
             >
               À propos
@@ -149,27 +169,34 @@ function Header() {
               <div
                 className="position-absolute end-0 rounded shadow"
                 style={{
-                  width: "200px",
+                  width: "220px",
                   backgroundColor: "rgba(97, 0, 171, 1)",
                   top: "100%",
                   marginTop: "6px",
-                  zIndex: 1
+                  zIndex: 1000
                 }}
               >
                 {menuOptions.map((option, index) => (
-                  <button
-                    key={index}
-                    className="btn w-100 text-start text-white"
-                    onClick={() => {
-                      handleNavigation(option.link);
-                      setProfilOuvert(false);
-                    }}
-                  >
-                    {option.label}
-                  </button>
+                  option.isHeader ? (
+                    <div
+                      key={index}
+                      className="px-4 py-3 text-white font-weight-bold border-bottom border-secondary"
+                      style={{ fontSize: "0.9rem" }}
+                    >
+                      👤 {option.label}
+                    </div>
+                  ) : (
+                    <button
+                      key={index}
+                      className="btn w-100 text-start text-white hover:bg-purple-700 transition"
+                      onClick={() => handleNavigation(option.link)}
+                    >
+                      {option.label}
+                    </button>
+                  )
                 ))}
 
-                {/* Bouton déconnexion séparé si l'utilisateur est connecté */}
+                {/* Bouton déconnexion si l'utilisateur est connecté */}
                 {userRole && (
                   <button
                     className="btn w-100 text-start text-danger border-top border-secondary mt-1 pt-2"

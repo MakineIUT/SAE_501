@@ -9,7 +9,7 @@ function Accueil() {
   const colors = ["#c78fefff", "#7CF291", "#5B82F3", "#F6A55A"];
 
   useEffect(() => {
-    fetch(`${API_URL}/api/formations`)
+    fetch(`${API_URL}/formations`)
       .then((res) => res.json())
       .then((data) => {
         const formatted = data.map((f, index) => ({
