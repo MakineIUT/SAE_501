@@ -32,7 +32,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
           className="w-full h-[500px] object-cover rounded-[20px] shadow-2xl"
         />
 
-        {/* Overlapping Content Card */}
+        {/*Contenu card */}
         <div className="absolute top-8 left-0 md:-left-12 lg:-left-24 w-[380px] max-w-[90%] bg-white rounded-[24px] shadow-2xl p-6 z-10">
           <h2 className="text-3xl font-extrabold text-gray-900 leading-tight mb-2 font-poppins">
             {formation.nom}
@@ -50,7 +50,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
             En savoir plus
           </button>
 
-          {/* SESSIONS Dropdown */}
+          {/* Dropdown des sessions */}
           <div className="border border-gray-900 rounded-xl mb-4 overflow-hidden bg-white">
             <button
               onClick={() => setIsOpen(!isOpen)}

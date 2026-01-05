@@ -12,7 +12,7 @@ export default function Apropos() {
         padding: "80px 10%"
       }}
     >
-      {/* SECTION VISITE VIRTUELLE */}
+      {/* partie visite virtuelle */}
       <div
         style={{
           display: "flex",
@@ -24,7 +24,7 @@ export default function Apropos() {
           boxShadow: "0 15px 40px rgba(0,0,0,0.1)"
         }}
       >
-        {/* ZONE 3D / APERÇU */}
+        {/* zone 3d */}
         <div
           style={{
             width: "50%",
@@ -50,7 +50,7 @@ export default function Apropos() {
           />
         </div>
 
-        {/* TEXTE */}
+        {/* texte */}
         <div
           style={{
             width: "50%",
@@ -86,7 +86,7 @@ export default function Apropos() {
         </div>
       </div>
 
-      {/* POPUP VISITE 3D */}
+      {/* pop up de la 3d */}
       {openVisite && (
         <div
           style={{
@@ -109,7 +109,7 @@ export default function Apropos() {
               overflow: "hidden"
             }}
           >
-            {/* BOUTON FERMER */}
+            {/* btn fermer */}
             <button
               onClick={() => setOpenVisite(false)}
               style={{
@@ -142,7 +142,7 @@ export default function Apropos() {
         </div>
       )}
 
-      {/* PARAGRAPHE DE PRÉSENTATION */}
+      {/* paragraphe présentation */}
       <div
         style={{
           marginTop: "60px",

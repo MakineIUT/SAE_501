@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
-import API_URL from "../api.js";
+import API_URL from '../api.js';
 
 export default function DashboardAdmin() {
   const [menu, setMenu] = useState("formateurs");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [mode, setMode] = useState(null); // "add" | "edit"
+  const [mode, setMode] = useState(null);
   const [formateurs, setFormateurs] = useState([]);
   const [apprenants, setApprenants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Charger les données au démarrage
   useEffect(() => {
     chargerDonnees();
   }, [menu]);
@@ -20,41 +19,55 @@ export default function DashboardAdmin() {
       setLoading(true);
       setError(null);
       
-      console.log(`Chargement des ${menu}...`);
+      console.log("🔄 Chargement des utilisateurs...");
       const response = await fetch(`${API_URL}/admin/utilisateurs`);
       
       if (!response.ok) {
-        throw new Error(`Erreur ${response.status}`);
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
       }
       
       const data = await response.json();
-      console.log("✅ Utilisateurs reçus:", data);
+      console.log("✅ Données reçues:", data);
       
-      // Filtrer formateurs et apprenants selon les ID
-      const formateursList = data.filter(u => u.idFormateur !== undefined && u.idFormateur !== null);
-      const apprenantsList = data.filter(u => u.idApprenant !== undefined && u.idAdmin === undefined && u.idFormateur === undefined);
+      // Séparer les utilisateurs par type
+      const formateursList = data.filter(u => 
+        u.idFormateur !== undefined && 
+        u.idFormateur !== null
+      );
       
-      console.log("👨‍🏫 Formateurs:", formateursList);
-      console.log("👨‍🎓 Apprenants:", apprenantsList);
+      // Un apprenant est quelqu'un qui n'est NI formateur NI admin
+      const apprenantsList = data.filter(u => 
+        !u.idFormateur && // Pas un formateur
+        !u.idAdmin &&     // Pas un admin
+        (u.idApprenant !== undefined || u.dateInscription !== undefined) // A au moins un attribut d'apprenant
+      );
+      
+      console.log(`📊 ${formateursList.length} formateurs, ${apprenantsList.length} apprenants`);
       
       setFormateurs(formateursList);
       setApprenants(apprenantsList);
       
     } catch (err) {
-      console.error("❌ Erreur:", err);
-      setError("Impossible de charger les utilisateurs: " + err.message);
+      console.error("❌ Erreur de chargement:", err);
+      setError("Impossible de charger les données. Vérifiez que le backend est lancé sur " + API_URL);
     } finally {
       setLoading(false);
     }
   };
 
   const users = menu === "formateurs" ? formateurs : apprenants;
-  const setUsers = menu === "formateurs" ? setFormateurs : setApprenants;
 
-  // AJOUTER un utilisateur
+  // Fonction pour obtenir l'ID selon le type d'utilisateur
+  const getUserId = (user) => {
+    if (user.idFormateur) return user.idFormateur;
+    if (user.idApprenant) return user.idApprenant;
+    if (user.idUtilisateur) return user.idUtilisateur;
+    return user.id;
+  };
+
   const handleAdd = async (user) => {
     try {
-      console.log("➕ Ajout:", user);
+      console.log("➕ Ajout utilisateur:", user);
       
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -66,27 +79,25 @@ export default function DashboardAdmin() {
       
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || "Erreur lors de l'ajout");
+        throw new Error(text || `Erreur ${response.status}`);
       }
       
       console.log("✅ Utilisateur ajouté");
       alert("✅ Utilisateur ajouté avec succès !");
       
-      // Recharger les données
       await chargerDonnees();
       setSelectedUser(null);
       setMode(null);
       
     } catch (err) {
-      console.error("❌ Erreur:", err);
+      console.error("❌ Erreur ajout:", err);
       alert("❌ Erreur : " + err.message);
     }
   };
 
-  // MODIFIER un utilisateur
   const handleEdit = async (user) => {
     try {
-      console.log("✏️ Modification:", user);
+      console.log("✏️ Modification utilisateur:", user);
       
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -98,31 +109,29 @@ export default function DashboardAdmin() {
       
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || "Erreur lors de la modification");
+        throw new Error(text || `Erreur ${response.status}`);
       }
       
       console.log("✅ Utilisateur modifié");
       alert("✅ Utilisateur modifié avec succès !");
       
-      // Recharger les données
       await chargerDonnees();
       setSelectedUser(null);
       setMode(null);
       
     } catch (err) {
-      console.error("❌ Erreur:", err);
+      console.error("❌ Erreur modification:", err);
       alert("❌ Erreur : " + err.message);
     }
   };
 
-  // SUPPRIMER un utilisateur
   const handleDelete = async (id) => {
     if (!window.confirm("⚠️ Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
       return;
     }
     
     try {
-      console.log("🗑️ Suppression:", id);
+      console.log("🗑️ Suppression ID:", id);
       
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -132,17 +141,16 @@ export default function DashboardAdmin() {
       
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || "Erreur lors de la suppression");
+        throw new Error(text || `Erreur ${response.status}`);
       }
       
       console.log("✅ Utilisateur supprimé");
       alert("✅ Utilisateur supprimé avec succès !");
       
-      // Recharger les données
       await chargerDonnees();
       
     } catch (err) {
-      console.error("❌ Erreur:", err);
+      console.error("❌ Erreur suppression:", err);
       alert("❌ Erreur : " + err.message);
     }
   };
@@ -187,10 +195,11 @@ export default function DashboardAdmin() {
 
         {/* CONTENU */}
         <div style={{ flex: 1, padding: "40px", overflowY: "auto" }}>
+          {/* Message d'erreur */}
           {error && (
-            <div style={{ padding: "15px", background: "#fee", border: "1px solid #fcc", borderRadius: "10px", marginBottom: "20px", color: "#c00" }}>
+            <div style={errorBoxStyle}>
               <strong>⚠️ {error}</strong>
-              <button onClick={chargerDonnees} style={{ marginLeft: "15px", padding: "6px 12px", cursor: "pointer", borderRadius: "6px", border: "none", background: "#c00", color: "#fff" }}>
+              <button onClick={chargerDonnees} style={retryBtnStyle}>
                 🔄 Réessayer
               </button>
             </div>
@@ -204,6 +213,7 @@ export default function DashboardAdmin() {
                 <AdminList
                   title={menu}
                   users={users}
+                  getUserId={getUserId}
                   onAdd={() => {
                     setMode("add");
                     setSelectedUser({
@@ -266,9 +276,9 @@ function MenuItem({ label, active, onClick }) {
   );
 }
 
-/* ---------------- LISTE ---------------- */
+/* ---------------- LISTE UTILISATEURS ---------------- */
 
-function AdminList({ title, users, onAdd, onEdit, onDelete }) {
+function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
@@ -289,43 +299,50 @@ function AdminList({ title, users, onAdd, onEdit, onDelete }) {
         </div>
       ) : (
         <div style={{ display: "grid", gap: "12px" }}>
-          {users.map((user) => (
-            <div key={user.idFormateur || user.idApprenant || user.idUtilisateur} style={cardStyle}>
-              <div>
-                <div style={{ fontWeight: "bold", fontSize: "1.05rem", marginBottom: "5px" }}>
-                  {user.nom} {user.prenom}
-                </div>
-                <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                  📧 {user.email || "Email non renseigné"}
-                </div>
-                {user.telephone && (
-                  <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                    📱 {user.telephone}
+          {users.map((user) => {
+            const userId = getUserId(user);
+            return (
+              <div key={userId} style={cardStyle}>
+                <div>
+                  <div style={{ fontWeight: "bold", fontSize: "1.05rem", marginBottom: "5px" }}>
+                    {user.nom} {user.prenom}
                   </div>
-                )}
-              </div>
+                  <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                    📧 {user.email || "Email non renseigné"}
+                  </div>
+                  {user.telephone && (
+                    <div style={{ fontSize: "0.9rem", color: "#666" }}>
+                      📱 {user.telephone}
+                    </div>
+                  )}
+                </div>
 
-              <div style={{ display: "flex", gap: "10px" }}>
-                <button onClick={() => onEdit(user)} style={iconBtn} title="Modifier">
-                  ✏️
-                </button>
-                <button 
-                  onClick={() => onDelete(user.idFormateur || user.idApprenant || user.idUtilisateur)} 
-                  style={{ ...iconBtn, background: "#fee" }} 
-                  title="Supprimer"
-                >
-                  🗑️
-                </button>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button 
+                    onClick={() => onEdit(user)} 
+                    style={iconBtn} 
+                    title="Modifier"
+                  >
+                    ✏️
+                  </button>
+                  <button 
+                    onClick={() => onDelete(userId)} 
+                    style={{ ...iconBtn, background: "#fee" }} 
+                    title="Supprimer"
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </>
   );
 }
 
-/* ---------------- FORM AJOUT / MODIF ---------------- */
+/* ---------------- FORMULAIRE AJOUT/MODIFICATION ---------------- */
 
 function UserForm({ mode, user, userType, onBack, onSave }) {
   const [form, setForm] = useState(user);
@@ -333,8 +350,15 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
 
   const handleSubmit = async () => {
     // Validations
-    if (!form.nom || !form.prenom || !form.email) {
+    if (!form.nom?.trim() || !form.prenom?.trim() || !form.email?.trim()) {
       alert("⚠️ Les champs Nom, Prénom et Email sont obligatoires");
+      return;
+    }
+
+    // Validation email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      alert("⚠️ L'email n'est pas valide");
       return;
     }
 
@@ -372,10 +396,13 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
           fontSize: "2rem",
           fontWeight: "bold"
         }}>
-          {mode === "add" ? "➕" : form.nom?.charAt(0)}
+          {mode === "add" ? "➕" : (form.nom?.charAt(0) || "?")}
         </div>
         <h2 style={{ marginLeft: "20px", fontSize: "1.8rem" }}>
-          {mode === "add" ? `➕ Ajouter un ${userType.slice(0, -1)}` : `✏️ Modifier ${form.nom} ${form.prenom}`}
+          {mode === "add" 
+            ? `➕ Ajouter un ${userType.slice(0, -1)}` 
+            : `✏️ Modifier ${form.nom} ${form.prenom}`
+          }
         </h2>
       </div>
 
@@ -422,10 +449,20 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
             onChange={(v) => setForm({ ...form, motDePasse: v })} 
             placeholder="Minimum 6 caractères"
           />
+          
+          {mode === "edit" && (
+            <p style={{ fontSize: "0.85rem", color: "#999", marginTop: "8px" }}>
+              💡 Laissez vide pour conserver le mot de passe actuel
+            </p>
+          )}
         </div>
       </div>
 
-      <button onClick={handleSubmit} disabled={loading} style={{ ...submitBtnStyle, opacity: loading ? 0.6 : 1 }}>
+      <button 
+        onClick={handleSubmit} 
+        disabled={loading} 
+        style={{ ...submitBtnStyle, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+      >
         {loading ? "⏳ Enregistrement..." : mode === "add" ? "➕ Ajouter" : "✅ Modifier"}
       </button>
     </div>
@@ -445,7 +482,7 @@ function Loader() {
         borderRadius: "50%", 
         animation: "spin 1s linear infinite" 
       }} />
-      <p style={{ color: "#999", fontSize: "0.95rem" }}>Chargement...</p>
+      <p style={{ color: "#999", fontSize: "0.95rem" }}>Chargement des données...</p>
       <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
@@ -456,12 +493,18 @@ function Loader() {
   );
 }
 
-/* ---------------- UI COMPONENTS ---------------- */
+/* ---------------- INPUT COMPONENT ---------------- */
 
 function Input({ label, type = "text", value, onChange, placeholder }) {
   return (
     <div>
-      <label style={{ display: "block", fontWeight: "600", marginBottom: "8px", color: "#333", fontSize: "0.95rem" }}>
+      <label style={{ 
+        display: "block", 
+        fontWeight: "600", 
+        marginBottom: "8px", 
+        color: "#333", 
+        fontSize: "0.95rem" 
+      }}>
         {label}
       </label>
       <input
@@ -508,7 +551,6 @@ const cardStyle = {
   background: "#fff",
   padding: "20px",
   borderRadius: "14px",
-  marginBottom: "12px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -564,7 +606,8 @@ const inputStyle = {
   borderRadius: "8px",
   border: "2px solid #e0e0e0",
   fontSize: "1rem",
-  transition: "border 0.2s ease"
+  transition: "border 0.2s ease",
+  boxSizing: "border-box"
 };
 
 const submitBtnStyle = {
@@ -578,4 +621,27 @@ const submitBtnStyle = {
   fontWeight: "bold",
   fontSize: "16px",
   cursor: "pointer"
+};
+
+const errorBoxStyle = {
+  padding: "15px",
+  background: "#fee",
+  border: "1px solid #fcc",
+  borderRadius: "10px",
+  marginBottom: "20px",
+  color: "#c00",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center"
+};
+
+const retryBtnStyle = {
+  marginLeft: "15px",
+  padding: "6px 12px",
+  cursor: "pointer",
+  borderRadius: "6px",
+  border: "none",
+  background: "#c00",
+  color: "#fff",
+  fontWeight: "bold"
 };

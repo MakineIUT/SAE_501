@@ -18,7 +18,7 @@ const Connexion = () => {
     };
 
     const determineUserRole = (userData) => {
-        // Détermine le rôle en fonction de la présence des propriétés spécifiques
+        // Détermine le rôle
         if (userData.idAdmin !== undefined && userData.idAdmin !== null) {
             return 'ADMIN';
         } else if (userData.idFormateur !== undefined && userData.idFormateur !== null) {
@@ -26,7 +26,7 @@ const Connexion = () => {
         } else if (userData.idApprenant !== undefined && userData.idApprenant !== null) {
             return 'APPRENANT';
         }
-        return 'APPRENANT'; // Par défaut
+        return 'APPRENANT'; // rôle par défaut
     };
 
     const handleSubmit = async (e) => {

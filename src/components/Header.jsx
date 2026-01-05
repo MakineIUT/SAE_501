@@ -16,7 +16,7 @@ function Header() {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         setCurrentUser(user);
-        setUserRole(user.role); // Le rôle est déjà dans user.role
+        setUserRole(user.role); 
       } else {
         setCurrentUser(null);
         setUserRole(null);
@@ -28,7 +28,7 @@ function Header() {
     }
   };
 
-  // Recharger à chaque changement de page
+  
   useEffect(() => {
     loadUser();
   }, [location]);
@@ -50,18 +50,17 @@ function Header() {
     navigate('/accueil');
   };
 
-  // Logique de filtrage des liens selon le rôle
   const getFilteredMenuOptions = () => {
     let options = [];
 
     if (!userRole) {
-      // VISITEUR (Non connecté)
+      // visisteur (Non connecté)
       options = [
         { label: "Connexion", link: "connexion" },
         { label: "Inscription", link: "inscription" },
       ];
     } else {
-      // CONNECTÉ - Afficher le nom de l'utilisateur
+      // connecté - Afficher le nom de l'utilisateur
       if (currentUser) {
         options.push({
           label: `${currentUser.prenom} ${currentUser.nom}`,

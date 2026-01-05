@@ -41,7 +41,7 @@ export default function FormationDetailsModal({ formation, close }) {
         idSession: selectedSession.idSession
       });
 
-      // Appel API pour créer l'inscription
+      // créer l'inscription avec l'api
       const response = await fetch(
         `${API_URL}/apprenants/${idApprenant}/inscriptions?idFormation=${formation.idFormation}&idSession=${selectedSession.idSession}`,
         { method: "POST" }
@@ -93,7 +93,7 @@ export default function FormationDetailsModal({ formation, close }) {
           boxShadow: "0 25px 50px rgba(0,0,0,0.3)"
         }}
       >
-        {/* Bouton fermer */}
+       
         <button
           onClick={close}
           style={{
@@ -179,7 +179,6 @@ export default function FormationDetailsModal({ formation, close }) {
             )}
           </div>
 
-          {/* Bouton d'action */}
           <div style={{ display: "flex", gap: "15px" }}>
             <button
               onClick={handleInscription}
@@ -201,7 +200,7 @@ export default function FormationDetailsModal({ formation, close }) {
                 transition: "all 0.3s"
               }}
             >
-              {loading ? "⏳ Inscription en cours..." : "✅ S'inscrire"}
+              {loading ? " Inscription en cours..." : " S'inscrire"}
             </button>
 
             <button
@@ -231,7 +230,7 @@ export default function FormationDetailsModal({ formation, close }) {
   );
 }
 
-/* ------------------- COMPONENTS ------------------- */
+/* -------- composants ------------ */
 
 function InfoCard({ icon, label, value }) {
   return (

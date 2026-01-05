@@ -5,7 +5,7 @@ import API_URL from "../api.js";
 function Accueil() {
   const [formations, setFormations] = useState([]);
 
-  // Couleurs fixes
+  // Couleurs fixes pour les cartes
   const colors = ["#c78fefff", "#7CF291", "#5B82F3", "#F6A55A"];
 
   useEffect(() => {
