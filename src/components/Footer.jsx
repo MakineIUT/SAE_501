@@ -1,12 +1,8 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import logotritech from "../assets/logotritech.jpg";
-
 
 function Footer() {
   return (
-    <footer className="  dark:bg-[#33005A] ">
-        <div className="  w-full max-w-screen-xl mx-auto p-4 md:py-8">
+    <footer className=" dark:bg-[#33005A] ">
+        <div className=" w-full max-w-screen-xl mx-auto p-4 md:py-8">
             <div className=" sm:flex sm:items-center sm:justify-between">
                 <a href="#" className="flex  no-underline items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
                     <img src="/Logo.png" className="h-7" alt="logo tritech" />

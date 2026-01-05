@@ -1,19 +1,24 @@
 import { useState, useEffect } from "react";
 import API_URL from '../api.js';
 
+// composant du dashboard 
 export default function DashboardAdmin() {
   const [menu, setMenu] = useState("formateurs");
   const [selectedUser, setSelectedUser] = useState(null);
+  // mode d'action: "add" ou "edit"
   const [mode, setMode] = useState(null);
+  // listes des utilisateurs
   const [formateurs, setFormateurs] = useState([]);
   const [apprenants, setApprenants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  
   useEffect(() => {
     chargerDonnees();
   }, [menu]);
 
+  // chargement des données avec l'api 
   const chargerDonnees = async () => {
     try {
       setLoading(true);
@@ -29,19 +34,19 @@ export default function DashboardAdmin() {
       const data = await response.json();
       console.log("✅ Données reçues:", data);
       
-      // Séparer les utilisateurs par type
+      // séparer les utilisateurs par type
       const formateursList = data.filter(u => 
         u.idFormateur !== undefined && 
         u.idFormateur !== null
       );
       
-      // Un apprenant est quelqu'un qui n'est NI formateur NI admin
+      // un apprenant est quelqu'un qui n'est NI formateur NI admin
       const apprenantsList = data.filter(u => 
-        !u.idFormateur && // Pas un formateur
-        !u.idAdmin &&     // Pas un admin
-        (u.idApprenant !== undefined || u.dateInscription !== undefined) // A au moins un attribut d'apprenant
+        !u.idFormateur &&
+        !u.idAdmin &&     
+        (u.idApprenant !== undefined || u.dateInscription !== undefined) // a au moins un attribut d'apprenant
       );
-      
+
       console.log(`📊 ${formateursList.length} formateurs, ${apprenantsList.length} apprenants`);
       
       setFormateurs(formateursList);
@@ -55,9 +60,10 @@ export default function DashboardAdmin() {
     }
   };
 
+  
   const users = menu === "formateurs" ? formateurs : apprenants;
 
-  // Fonction pour obtenir l'ID selon le type d'utilisateur
+  // Fonction pour obtenir l'id selon le type d'utilisateur
   const getUserId = (user) => {
     if (user.idFormateur) return user.idFormateur;
     if (user.idApprenant) return user.idApprenant;
@@ -65,10 +71,11 @@ export default function DashboardAdmin() {
     return user.id;
   };
 
+  // Ajout d'un utilisateur
   const handleAdd = async (user) => {
     try {
       console.log("➕ Ajout utilisateur:", user);
-      
+
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
       const response = await fetch(`${API_URL}${endpoint}`, {
@@ -77,6 +84,7 @@ export default function DashboardAdmin() {
         body: JSON.stringify(user)
       });
       
+      // gestions des erreurs
       if (!response.ok) {
         const text = await response.text();
         throw new Error(text || `Erreur ${response.status}`);
@@ -95,6 +103,7 @@ export default function DashboardAdmin() {
     }
   };
 
+  // modification d'un utilisateur
   const handleEdit = async (user) => {
     try {
       console.log("✏️ Modification utilisateur:", user);
@@ -125,6 +134,7 @@ export default function DashboardAdmin() {
     }
   };
 
+  // suppression d'un utilisateur
   const handleDelete = async (id) => {
     if (!window.confirm("⚠️ Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
       return;
@@ -155,6 +165,7 @@ export default function DashboardAdmin() {
     }
   };
 
+  // enregistrement des actions 
   const handleSave = (user) => {
     if (mode === "add") {
       handleAdd(user);
@@ -174,7 +185,7 @@ export default function DashboardAdmin() {
           </div>
           
           <MenuItem
-            label="👨‍🏫 Formateurs"
+            label="Formateurs"
             active={menu === "formateurs"}
             onClick={() => {
               setMenu("formateurs");
@@ -183,7 +194,7 @@ export default function DashboardAdmin() {
             }}
           />
           <MenuItem
-            label="👨‍🎓 Apprenants"
+            label="Apprenants"
             active={menu === "apprenants"}
             onClick={() => {
               setMenu("apprenants");
@@ -193,9 +204,9 @@ export default function DashboardAdmin() {
           />
         </div>
 
-        {/* CONTENU */}
+        {/* CONTENU DASHBOARD */}
         <div style={{ flex: 1, padding: "40px", overflowY: "auto" }}>
-          {/* Message d'erreur */}
+          {/* Message d'erreur lors du chargement */}
           {error && (
             <div style={errorBoxStyle}>
               <strong>⚠️ {error}</strong>
@@ -206,6 +217,7 @@ export default function DashboardAdmin() {
           )}
 
           {loading ? (
+            // affiche le loader pendant le chargement
             <Loader />
           ) : (
             <>
@@ -252,8 +264,9 @@ export default function DashboardAdmin() {
   );
 }
 
-/* ---------------- MENU ITEM ---------------- */
+/* ----------------  les composants du dashboard ---------------- */
 
+// élément de menu dans la sidebar
 function MenuItem({ label, active, onClick }) {
   return (
     <div
@@ -283,11 +296,11 @@ function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
         <h2 style={{ textTransform: "capitalize", fontSize: "2rem", fontWeight: "bold", color: "#333" }}>
-          {title === "formateurs" ? "👨‍🏫 Formateurs" : "👨‍🎓 Apprenants"}
+          {title === "formateurs" ? "Formateurs" : "Apprenants"}
         </h2>
 
         <button onClick={onAdd} style={addButtonStyle}>
-          ➕ Ajouter
+          Ajouter
         </button>
       </div>
 
@@ -308,11 +321,11 @@ function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
                     {user.nom} {user.prenom}
                   </div>
                   <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                    📧 {user.email || "Email non renseigné"}
+                    mail :  {user.email || "Email non renseigné"}
                   </div>
                   {user.telephone && (
                     <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                      📱 {user.telephone}
+                      telephone :  {user.telephone}
                     </div>
                   )}
                 </div>
@@ -351,27 +364,28 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
   const handleSubmit = async () => {
     // Validations
     if (!form.nom?.trim() || !form.prenom?.trim() || !form.email?.trim()) {
-      alert("⚠️ Les champs Nom, Prénom et Email sont obligatoires");
+      alert("Les champs Nom, Prénom et Email sont obligatoires");
       return;
     }
 
     // Validation email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
-      alert("⚠️ L'email n'est pas valide");
+      alert("L'email n'est pas valide");
       return;
     }
 
     if (mode === "add" && !form.motDePasse) {
-      alert("⚠️ Le mot de passe est obligatoire pour un nouvel utilisateur");
+      alert("Le mot de passe est obligatoire pour un nouvel utilisateur");
       return;
     }
 
     if (form.motDePasse && form.motDePasse.length < 6) {
-      alert("⚠️ Le mot de passe doit contenir au moins 6 caractères");
+      alert("Le mot de passe doit contenir au moins 6 caractères");
       return;
     }
 
+    // sauvegarde des nouvelles données
     setLoading(true);
     await onSave(form);
     setLoading(false);
@@ -396,12 +410,12 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
           fontSize: "2rem",
           fontWeight: "bold"
         }}>
-          {mode === "add" ? "➕" : (form.nom?.charAt(0) || "?")}
+          {mode === "add" ? "" : (form.nom?.charAt(0) || "?")}
         </div>
         <h2 style={{ marginLeft: "20px", fontSize: "1.8rem" }}>
           {mode === "add" 
-            ? `➕ Ajouter un ${userType.slice(0, -1)}` 
-            : `✏️ Modifier ${form.nom} ${form.prenom}`
+            ? `Ajouter un ${userType.slice(0, -1)}` 
+            : `Modifier ${form.nom} ${form.prenom}`
           }
         </h2>
       </div>
@@ -439,7 +453,7 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
 
         <div style={{ borderTop: "2px solid #eee", paddingTop: "20px", marginTop: "10px" }}>
           <h3 style={{ fontSize: "1rem", marginBottom: "15px", color: "#666" }}>
-            🔒 {mode === "add" ? "Mot de passe *" : "Changer le mot de passe (optionnel)"}
+             {mode === "add" ? "Mot de passe *" : "Changer le mot de passe (optionnel)"}
           </h3>
           
           <Input 
@@ -459,18 +473,19 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
       </div>
 
       <button 
+      
         onClick={handleSubmit} 
         disabled={loading} 
         style={{ ...submitBtnStyle, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
       >
-        {loading ? "⏳ Enregistrement..." : mode === "add" ? "➕ Ajouter" : "✅ Modifier"}
+        {loading ? " Enregistrement..." : mode === "add" ? "Ajouter" : "Modifier"}
       </button>
     </div>
   );
 }
 
-/* ---------------- LOADER ---------------- */
 
+// loader chargement 
 function Loader() {
   return (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "400px", gap: "20px" }}>
@@ -493,8 +508,8 @@ function Loader() {
   );
 }
 
-/* ---------------- INPUT COMPONENT ---------------- */
 
+// composant input 
 function Input({ label, type = "text", value, onChange, placeholder }) {
   return (
     <div>

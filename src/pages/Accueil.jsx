@@ -8,6 +8,7 @@ function Accueil() {
   // Couleurs fixes pour les cartes
   const colors = ["#c78fefff", "#7CF291", "#5B82F3", "#F6A55A"];
 
+  // récuperer les infos depuis l'api
   useEffect(() => {
     fetch(`${API_URL}/formations`)
       .then((res) => res.json())
@@ -25,7 +26,6 @@ function Accueil() {
 
   return (
     <>
-
       <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-neutral-50 dark:bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
         <div className="container mx-auto mb-52 px-4">
           <div className="flex justify-center">
@@ -57,7 +57,7 @@ function Accueil() {
                   </p>
                 </div>
 
-                {/* Cards */}
+                {/* Cards des formations */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
                   {formations.map((f) => (
                     <div
@@ -94,13 +94,11 @@ function Accueil() {
                     </div>
                   ))}
                 </div>
-
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </>
   );
 }

@@ -10,27 +10,30 @@ export default function Formations() {
   const trackRef = useRef(null);
   const navigate = useNavigate();
 
+  
   const [dragX, setDragX] = useState(0);
+  //drag c'est la position du curseur sur la track
   const [isDragging, setIsDragging] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedFormation, setSelectedFormation] = useState(null);
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // VÉRIFICATION DE LA CONNEXION AU CLIC
+  // gestion ouverture modale détails formation
   const handleFormationClick = (formation) => {
     const user = localStorage.getItem("user");
 
     if (!user) {
-      // Si pas de user dans le storage, redirection page inscription
+      // si pas de user dans le storage, redirection page inscription
       navigate("/inscription");
     } else {
-      // Si connecté, on ouvre la modale normalement
+      // si connecté, on ouvre la modale normalement
       setSelectedFormation(formation);
       setOpenModal(true);
     }
   };
 
+  // useEffect pour fetch des formations et sessions associées car nécessaire pour afficher les places dispos 
   useEffect(() => {
     const fetchFormations = async () => {
       try {
@@ -68,6 +71,8 @@ export default function Formations() {
           };
         });
 
+
+        // récupération des formations enrichies avec sessions
         const enriched = await Promise.all(enrichedPromises);
         setFormations(enriched);
       } catch (err) {
@@ -79,7 +84,7 @@ export default function Formations() {
     fetchFormations();
   }, []);
 
-  // Logique du scrollbar custom
+  // logique du scrollbar custom
   const handleScroll = () => {
     const slider = sliderRef.current;
     const track = trackRef.current;
@@ -90,6 +95,8 @@ export default function Formations() {
     setDragX(percent * (track.offsetWidth - 18));
   };
 
+
+  // gestion du drag de la souris
   const handleMouseMove = (e) => {
     if (!isDragging || !trackRef.current || !sliderRef.current) return;
     const track = trackRef.current;
@@ -102,6 +109,7 @@ export default function Formations() {
     slider.scrollLeft = (x / max) * (slider.scrollWidth - slider.clientWidth);
   };
 
+  // scroll pour mettre à jour la position du drag quand on scroll le slider
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
@@ -110,14 +118,17 @@ export default function Formations() {
     }
   }, []);
 
+  // relâchement de la souris
   useEffect(() => {
     const up = () => setIsDragging(false);
     window.addEventListener("mouseup", up);
     return () => window.removeEventListener("mouseup", up);
   }, []);
 
+  // affichage pendant le chargement des données
   if (loading) return <div className="min-h-screen flex items-center justify-center">Chargement...</div>;
 
+  // rendu principal
   return (
     <div className="min-h-screen bg-[#FDF7FF] py-20 font-sans">
       <div
@@ -129,7 +140,7 @@ export default function Formations() {
           <FormationCard key={f.idFormation} formation={f} onOpenDetails={handleFormationClick} />
         ))}
       </div>
-
+    
       <div
         className="w-full max-w-xs mx-auto mt-8 h-2 bg-gray-200 rounded-full relative cursor-pointer"
         ref={trackRef}
@@ -144,7 +155,7 @@ export default function Formations() {
           style={{ left: dragX }}
         />
       </div>
-
+      
       {openModal && <FormationDetailsModal formation={selectedFormation} close={() => setOpenModal(false)} />}
     </div>
   );

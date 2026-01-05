@@ -8,22 +8,20 @@ export default function FormationCard({ formation, onOpenDetails }) {
   const [selectedSession, setSelectedSession] = useState(null);
 
   const handleInscription = () => {
-    // 1. D'abord, on vérifie si l'utilisateur est connecté
+    // voir si user est connecté
     const user = localStorage.getItem("user");
 
     if (!user) {
-      // SI PAS CONNECTÉ -> On envoie vers l'inscription
       navigate("/inscription");
       return;
     }
 
-    // 2. Si connecté, on vérifie la session
     if (!selectedSession) {
       alert("Veuillez sélectionner une session avant de vous inscrire.");
       return;
     }
     
-    // 3. Si tout est bon, on va au paiement
+    // envoie au paiement 
     navigate("/paiement", { 
       state: { 
         formation: formation,
@@ -42,7 +40,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
           className="w-full h-[500px] object-cover rounded-[20px] shadow-2xl"
         />
 
-        {/*Contenu card */}
+        {/*Contenu de la carte avec les appels des données de l'api */}
         <div className="absolute top-8 left-0 md:-left-12 lg:-left-24 w-[380px] max-w-[90%] bg-white rounded-[24px] shadow-2xl p-6 z-10">
           <h2 className="text-3xl font-extrabold text-gray-900 leading-tight mb-2 font-poppins">
             {formation.nom}

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { User, ShoppingCart, LayoutDashboard, Trash2, CheckCircle } from 'lucide-react';
 import API_URL from "../api.js";
 
+
 export default function DashboardApprenant() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [apprenant, setApprenant] = useState(null);
@@ -9,9 +10,11 @@ export default function DashboardApprenant() {
   const [paiements, setPaiements] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // récupérer l'ID de l'apprenant depuis le localStorage
   const user = JSON.parse(localStorage.getItem('user'));
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
 
+  // Charger les données
   useEffect(() => {
     if (idApprenant) {
       chargerTout();
@@ -46,8 +49,9 @@ export default function DashboardApprenant() {
     }
   };
 
+  // suppression d'une inscription
   const handleDelete = async (idInscription) => {
-    if (!confirm("⚠️ Annuler cette inscription ?")) return;
+    if (!confirm("Annuler cette inscription ?")) return;
     try {
       await fetch(`${API_URL}/inscriptions/${idInscription}/annuler`, { method: "PUT" });
       chargerTout();
@@ -66,16 +70,20 @@ export default function DashboardApprenant() {
         
         <div style={{ width: "260px", padding: "40px 20px", backgroundColor: "rgba(130, 3, 192, 1)", color: "#fff", display: "flex", flexDirection: "column", gap: "10px" }}>
           <h1 style={{ fontSize: "1.8rem", fontWeight: "bold", marginBottom: "40px", textAlign: "center" }}>TriTech</h1>
+
           <MenuItem label="Dashboard" icon={<LayoutDashboard size={20} />} active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
           <MenuItem label="Profil" icon={<User size={20} />} active={activeTab === "profile"} onClick={() => setActiveTab("profile")} />
-          <MenuItem label="Panier & Achats" icon={<ShoppingCart size={20} />} active={activeTab === "panier"} onClick={() => setActiveTab("panier")} />
+          <MenuItem label="Achats" icon={<ShoppingCart size={20} />} active={activeTab === "panier"} onClick={() => setActiveTab("panier")} />
+        
         </div>
+
 
         <div style={{ flex: 1, padding: "40px", overflowY: "auto", background: "#FDF7FF" }}>
           {activeTab === "dashboard" && <DashboardView inscriptions={inscriptions} />}
           {activeTab === "profile" && <ProfileView apprenant={apprenant} />}
           {activeTab === "panier" && (
             <PanierView 
+            // passer les inscriptions et paiements en props pour éviter de refaire des fetch car on les a déjà dans le parent
               inscriptions={inscriptions}
               paiements={paiements}
               onDelete={handleDelete} 
@@ -87,9 +95,11 @@ export default function DashboardApprenant() {
   );
 }
 
+// composant MenuItem
 function MenuItem({ label, icon, active, onClick }) {
   return (
     <div
+    
       onClick={onClick}
       style={{
         display: "flex",
@@ -117,18 +127,20 @@ function MenuItem({ label, icon, active, onClick }) {
 }
 
 function PanierView({ inscriptions, paiements, onDelete }) {
-  console.log("🔍 PanierView - Inscriptions:", inscriptions);
-  console.log("🔍 PanierView - Paiements:", paiements);
+  console.log("PanierView - Inscriptions:", inscriptions);
+  console.log("PanierView - Paiements:", paiements);
 
-  // Pour chaque inscription, vérifier si elle a un paiement
+  // pour chaque inscription, vérifier si elle a un paiement
   const inscriptionsAvecPaiement = inscriptions.map(insc => {
+    // trouver les paiements associés à cette inscription
     const aPaiement = paiements.some(p => p.statut === "Validé");
     return {
       ...insc,
       estPayee: aPaiement
-    };
+    }; 
   });
 
+  // séparer les inscriptions payées et en attente
   const payees = inscriptionsAvecPaiement.filter(i => i.estPayee);
   const enAttente = inscriptionsAvecPaiement.filter(i => !i.estPayee);
 
@@ -137,15 +149,6 @@ function PanierView({ inscriptions, paiements, onDelete }) {
   return (
     <div style={{ maxWidth: "850px", margin: "0 auto" }}>
       <h2 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "20px" }}>Mon Panier & Historique</h2>
-      
-      {/* DEBUG */}
-      <div style={{ padding: "15px", background: "#fff3cd", borderRadius: "10px", marginBottom: "20px", fontSize: "0.9rem" }}>
-        <p><strong>🐛 DEBUG:</strong></p>
-        <p>Total inscriptions: {inscriptions.length}</p>
-        <p>Total paiements: {paiements.length}</p>
-        <p>Formations payées: {payees.length}</p>
-        <p>En attente: {enAttente.length}</p>
-      </div>
 
       {/* PAYÉES */}
       <div style={{ marginBottom: "40px" }}>
@@ -168,7 +171,7 @@ function PanierView({ inscriptions, paiements, onDelete }) {
       <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "30px 0" }} />
 
       {/* EN ATTENTE */}
-      <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "15px" }}>🛒 En attente ({enAttente.length})</h3>
+      <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "15px" }}>En attente ({enAttente.length})</h3>
       {enAttente.length > 0 ? (
         <div style={{ background: "#fff", padding: "20px", borderRadius: "15px" }}>
           {enAttente.map(insc => (
@@ -195,6 +198,7 @@ function PanierView({ inscriptions, paiements, onDelete }) {
     </div>
   );
 }
+
 
 function DashboardView({ inscriptions }) {
   return (

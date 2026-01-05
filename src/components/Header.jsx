@@ -9,7 +9,7 @@ function Header() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Charger l'utilisateur depuis localStorage
+  // charger l'utilisateur depuis localStorage
   const loadUser = () => {
     try {
       const storedUser = localStorage.getItem('user');
@@ -29,19 +29,23 @@ function Header() {
   };
 
   
+  // recharger l'utilisateur à chaque changement de route
   useEffect(() => {
     loadUser();
   }, [location]);
 
+  // navigation
   const handleNavigation = (page) => {
     navigate(`/${page}`);
     setProfilOuvert(false);
   };
 
+  // menu profil 
   const toggleMenuprofil = () => {
     setProfilOuvert(!ProfilOuvert);
   };
 
+  //déconnexion
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUserRole(null);
@@ -50,6 +54,7 @@ function Header() {
     navigate('/accueil');
   };
 
+  // options des différents rôles
   const getFilteredMenuOptions = () => {
     let options = [];
 
@@ -60,7 +65,7 @@ function Header() {
         { label: "Inscription", link: "inscription" },
       ];
     } else {
-      // connecté - Afficher le nom de l'utilisateur
+      // connecté - affiche le nom de l'utilisateur
       if (currentUser) {
         options.push({
           label: `${currentUser.prenom} ${currentUser.nom}`,
@@ -86,6 +91,7 @@ function Header() {
     }
     return options;
   };
+
 
   const menuOptions = getFilteredMenuOptions();
 
@@ -195,7 +201,7 @@ function Header() {
                   )
                 ))}
 
-                {/* Bouton déconnexion si l'utilisateur est connecté */}
+                {/* Bouton déconnexion */}
                 {userRole && (
                   <button
                     className="btn w-100 text-start text-danger border-top border-secondary mt-1 pt-2"
@@ -207,7 +213,6 @@ function Header() {
               </div>
             )}
           </div>
-
         </div>
       </div>
     </header>

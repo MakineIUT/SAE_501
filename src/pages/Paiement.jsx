@@ -8,9 +8,11 @@ export default function DashboardApprenant() {
   const [inscriptions, setInscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   const user = JSON.parse(localStorage.getItem('user'));
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
 
+  // charger les données de l'apprenant et ses inscriptions
   useEffect(() => {
     if (idApprenant) {
       chargerApprenant();
@@ -20,6 +22,7 @@ export default function DashboardApprenant() {
     }
   }, [idApprenant]);
 
+  // charger les données de l'apprenant avec l'api 
   const chargerApprenant = async () => {
     try {
       const response = await fetch(`${API_URL}/apprenants/${idApprenant}`);
@@ -28,6 +31,7 @@ export default function DashboardApprenant() {
     } catch (err) { console.error(err); }
   };
 
+  // charger les inscriptions de l'apprenant avec l'api
   const chargerInscriptions = async () => {
     try {
       setLoading(true);
@@ -41,6 +45,7 @@ export default function DashboardApprenant() {
     }
   };
 
+  // gérer la suppression (annulation) d'une inscription
   const handleDelete = async (idInscription) => {
     if (!confirm("⚠️ Annuler cette inscription ?")) return;
     try {
@@ -49,15 +54,17 @@ export default function DashboardApprenant() {
     } catch (err) { alert("Erreur annulation"); }
   };
 
-  // Filtrage des inscriptions selon le statut (Gestion du problème d'encodage UTF-8)
+  // filtrage des inscriptions selon le statut (erreur avec les accents parfois)
   const formationsPayees = inscriptions.filter(i => 
     i.statut === "Payée" || i.statut === "PayÃ©e"
   );
+  // formations en attente de paiement
   const formationsEnAttente = inscriptions.filter(i => i.statut === "En attente");
 
   // Calcul du prix total basé sur le champ "prix" de l'objet formation
   const totalPrice = formationsEnAttente.reduce((sum, insc) => sum + (insc.formation?.prix || 0), 0);
 
+  // rendu principal dans le return pour le composant du dashboard de l'apprenant
   return (
     <div style={{ minHeight: "100vh", background: "#f5f5f5", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
       <div style={{ width: "90%", maxWidth: "1200px", minHeight: "85vh", background: "#fff", borderRadius: "30px", display: "flex", overflow: "hidden", boxShadow: "0 20px 50px rgba(0,0,0,0.1)" }}>
@@ -67,10 +74,10 @@ export default function DashboardApprenant() {
           <h1 style={{ fontSize: "1.8rem", fontWeight: "bold", marginBottom: "40px", textAlign: "center" }}>TriTech</h1>
           <MenuItem label="Dashboard" icon={<LayoutDashboard size={20} />} active={activeTab === "dashboard"} onClick={() => setActiveTab("dashboard")} />
           <MenuItem label="Profil" icon={<User size={20} />} active={activeTab === "profile"} onClick={() => setActiveTab("profile")} />
-          <MenuItem label="Panier & Achats" icon={<ShoppingCart size={20} />} active={activeTab === "panier"} onClick={() => setActiveTab("panier")} />
+          <MenuItem label="Achats" icon={<ShoppingCart size={20} />} active={activeTab === "panier"} onClick={() => setActiveTab("panier")} />
         </div>
 
-        {/* Main Content */}
+        {/* contenu principal */}
         <div style={{ flex: 1, padding: "40px", overflowY: "auto", background: "#FDF7FF" }}>
           {activeTab === "dashboard" && <DashboardView inscriptions={inscriptions} loading={loading} />}
           {activeTab === "profile" && <ProfileView apprenant={apprenant} loading={loading} />}
@@ -89,6 +96,7 @@ export default function DashboardApprenant() {
   );
 }
 
+// vu du panier et historique des achats
 function PanierView({ formationsPayees, formationsEnAttente, loading, onDelete, totalPrice }) {
   if (loading) return <p>Chargement...</p>;
 
@@ -157,7 +165,7 @@ function PanierView({ formationsPayees, formationsEnAttente, loading, onDelete, 
   );
 }
 
-// Composants auxiliaires (MenuItem, DashboardView, ProfileView)
+// composants (MenuItem, DashboardView, ProfileView) 
 function MenuItem({ label, icon, active, onClick }) {
   return (
     <div onClick={onClick} style={{
@@ -171,6 +179,7 @@ function MenuItem({ label, icon, active, onClick }) {
   );
 }
 
+// vue du dashboard de l'apprenant avec les statistiques
 function DashboardView({ inscriptions, loading }) {
   if (loading) return <p>Chargement...</p>;
   const payees = inscriptions.filter(i => i.statut === "Payée" || i.statut === "PayÃ©e").length;
@@ -188,6 +197,7 @@ function DashboardView({ inscriptions, loading }) {
   );
 }
 
+// carte de statistique individuelle qui sert à DashboardView pour afficher les stats de l'apprenant sur son dashboard
 function StatCard({ title, value, color = "#333" }) {
   return (
     <div style={{ background: "#fff", padding: "20px", borderRadius: "15px", boxShadow: "0 4px 10px rgba(0,0,0,0.05)" }}>
@@ -197,6 +207,7 @@ function StatCard({ title, value, color = "#333" }) {
   );
 }
 
+// vue du profil de l'apprenant 
 function ProfileView({ apprenant, loading }) {
   if (loading) return <p>Chargement...</p>;
   return (

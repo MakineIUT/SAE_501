@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 
 const Inscription = () => {
-    // Ajout d'un état pour gérer les champs du formulaire (Axe d'amélioration)
+    // ajout d'un état pour gérer les champs du formulair
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -11,6 +11,7 @@ const Inscription = () => {
         prenom: ''
     });
 
+    // gestion des changements dans les champs du formulaire
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -21,11 +22,11 @@ const Inscription = () => {
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
                         {/* Carte principale */}
-                        <div 
+                        <div
                             className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
                             style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
                         >
-                            
+
                             {/* Côté Gauche - Message de bienvenue */}
                             <div className="md:w-1/2 flex flex-col p-10 lg:p-16 text-white ">
                                 <h2 className="text-5xl lg:text-6xl font-bold mb-6">BIENVENUE</h2>
@@ -33,8 +34,7 @@ const Inscription = () => {
                                     Débutez votre reconversion
                                 </h4>
                                 <p className="text-sm leading-relaxed opacity-90">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce convallis ac velit non porttitor. Quisque eu convallis massa. Praesent feugiat iaculis nunc.
-                                </p>
+                                    Accédez à des formations variées et développez des compétences concrètes pour réussir votre avenir professionnel.                                </p>
                             </div>
 
                             {/* Côté Droit - Formulaire */}
@@ -43,8 +43,8 @@ const Inscription = () => {
                                     <h2 className="text-3xl font-bold mb-2 text-black">Inscription</h2>
                                     <p className="text-sm text-gray-600">
                                         Déjà inscrit ?{' '}
-                                        <Link 
-                                            to="/Connexion" 
+                                        <Link
+                                            to="/Connexion"
                                             className="no-underline font-bold text-gray-950 hover:text-purple-600 transition-colors "
                                         >
                                             Connectez-vous.
@@ -55,7 +55,7 @@ const Inscription = () => {
                                 <form className="space-y-4 w-80">
                                     {/* Email */}
                                     <div>
-           
+
                                         <input
                                             type="email"
                                             name="email"
@@ -115,7 +115,6 @@ const Inscription = () => {
                                     </div>
                                 </form>
                             </div>
-
                         </div>
                     </div>
                 </div>

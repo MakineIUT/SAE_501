@@ -10,9 +10,11 @@ export default function DashboardFormateur() {
   const [error, setError] = useState(null);
   const [selectedSession, setSelectedSession] = useState(null);
 
+  
   const user = JSON.parse(localStorage.getItem('user'));
   const idFormateur = user?.idFormateur || user?.idUtilisateur;
 
+  // useEffect pour charger les sessions
   useEffect(() => {
     if (idFormateur) {
       chargerSessions();
@@ -22,6 +24,7 @@ export default function DashboardFormateur() {
     }
   }, [idFormateur]);
 
+  // session de l'apprenant en fonction de son id 
   const chargerSessions = async () => {
     try {
       setLoading(true);
@@ -42,15 +45,15 @@ export default function DashboardFormateur() {
 
   const chargerApprenants = async (idSession) => {
     try {
-      // 1. Charger Apprenants
+      // charger apprenants
       const resApp = await fetch(`${API_URL}/formateurs/sessions/${idSession}/apprenants`);
       const dataApp = await resApp.json();
       
-      // 2. Charger Notes
+      // charger notes
       const resNotes = await fetch(`${API_URL}/formateurs/sessions/${idSession}/notes`);
       const dataNotes = resNotes.ok ? await resNotes.json() : [];
 
-      // Fusionner pour avoir tout dans le même tableau
+      // regrouper les deux dans un tableau 
       const complet = dataApp.map(app => {
         const n = dataNotes.find(note => note.apprenant?.idApprenant === app.idApprenant);
         return {
@@ -84,7 +87,7 @@ export default function DashboardFormateur() {
       });
       if (response.ok) {
         alert("Note enregistrée !");
-        chargerApprenants(selectedSession); // Rafraîchir la liste
+        chargerApprenants(selectedSession); // rafraîchit la liste
         setSelected(null);
       }
     } catch (err) { alert("Erreur note"); }
@@ -145,12 +148,13 @@ export default function DashboardFormateur() {
   );
 }
 
-// --- SOUS-COMPOSANTS ---
 
+// composant pour gérer les présences des apprenants dans une session
 function SessionDetail({ session, onBack, onMarquerPresence }) {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // charger les apprenants et leurs présences
   useEffect(() => {
     const init = async () => {
       const resApp = await fetch(`${API_URL}/formateurs/sessions/${session.idSession}/apprenants`);
@@ -158,6 +162,7 @@ function SessionDetail({ session, onBack, onMarquerPresence }) {
       const resPres = await fetch(`${API_URL}/formateurs/sessions/${session.idSession}/presences`);
       const dataPres = resPres.ok ? await resPres.json() : [];
 
+      // fusionner les données pour inclure le statut de présence
       const fusion = dataApp.map(a => ({
         ...a,
         present: dataPres.find(p => p.apprenant?.idApprenant === a.idApprenant)?.present || false
@@ -168,6 +173,7 @@ function SessionDetail({ session, onBack, onMarquerPresence }) {
     init();
   }, [session.idSession]);
 
+  // gérer le changement de présence
   const handleCheck = (app) => {
     const newStatus = !app.present;
     setList(list.map(item => item.idApprenant === app.idApprenant ? { ...item, present: newStatus } : item));
@@ -190,6 +196,7 @@ function SessionDetail({ session, onBack, onMarquerPresence }) {
   );
 }
 
+// composant pour noter un apprenant
 function Notation({ apprenant, onBack, onSave }) {
   const [note, setNote] = useState(apprenant.note ?? "");
   const [commentaire, setCommentaire] = useState(apprenant.commentaire ?? "");
@@ -200,15 +207,13 @@ function Notation({ apprenant, onBack, onSave }) {
       <h2>Noter : {apprenant.nom} {apprenant.prenom}</h2>
       <input type="number" placeholder="Note /20" value={note} onChange={e => setNote(e.target.value)} style={input} />
       <textarea placeholder="Commentaire" value={commentaire} onChange={e => setCommentaire(e.target.value)} style={textarea} />
-      <button style={btnFull} onClick={() => onSave({ ...apprenant, note, commentaire })}>✅ Sauvegarder</button>
+      <button style={btnFull} onClick={() => onSave({ ...apprenant, note, commentaire })}>Sauvegarder</button>
     </FormCard>
   );
 }
 
-// Les autres composants (ApprenantsList, SessionsList, ProfilFormateur) restent identiques à ton code original 
-// car ils utilisent déjà les props passées. J'ai juste nettoyé la logique de data-binding.
 
-/* --- STYLES ADDITIONNELS --- */
+/* --- STYLES  --- */
 const presenceRow = (isPresent) => ({
   display: "flex",
   alignItems: "center",
@@ -228,7 +233,7 @@ const selectStyle = {
   fontWeight: "bold"
 };
 
-// ... copier les autres styles de ton fichier original (page, container, sidebar, etc.)
+// ... style objet initial : de la maquette 
 const page = { minHeight: "100vh", background: "#f5f5f5", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" };
 const container = { width: "95%", maxWidth: "1200px", minHeight: "85vh", background: "#fff", borderRadius: "30px", display: "flex", overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,0.1)" };
 const sidebar = { width: "240px", padding: "30px", backgroundColor: "rgba(130, 3, 192, 1)", color: "#fff" };
@@ -239,6 +244,7 @@ const textarea = { ...input, height: "100px" };
 const btnFull = { width: "100%", padding: "12px", background: "#7b2ff7", color: "#fff", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" };
 const backBtn = { background: "none", border: "none", color: "#7b2ff7", cursor: "pointer", marginBottom: "15px", fontWeight: "bold" };
 
+// composant pour les éléments du menu
 function MenuItem({ label, active, onClick }) {
     return (
       <div onClick={onClick} style={{
@@ -248,8 +254,10 @@ function MenuItem({ label, active, onClick }) {
     );
 }
 
+// composant pour afficher un loader
 function Loader() { return <div style={{ textAlign: "center", padding: "50px" }}>Chargement...</div>; }
 
+// composant pour afficher la liste des apprenants
 function ApprenantsList({ apprenants, onSelect }) {
     return (
       <div>
@@ -264,6 +272,7 @@ function ApprenantsList({ apprenants, onSelect }) {
     );
 }
 
+// composant pour afficher la liste des sessions
 function SessionsList({ sessions, onSelect }) {
     return (
       <div>
@@ -278,6 +287,7 @@ function SessionsList({ sessions, onSelect }) {
     );
 }
 
+// composant pour afficher le profil du formateur
 function ProfilFormateur({ formateur }) {
     return (
       <div>

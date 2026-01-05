@@ -12,13 +12,14 @@ const Connexion = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
         setError('');
     };
 
     const determineUserRole = (userData) => {
-        // Détermine le rôle
+        // reconnait le rôle 
         if (userData.idAdmin !== undefined && userData.idAdmin !== null) {
             return 'ADMIN';
         } else if (userData.idFormateur !== undefined && userData.idFormateur !== null) {
@@ -29,12 +30,14 @@ const Connexion = () => {
         return 'APPRENANT'; // rôle par défaut
     };
 
+    // soumission du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
+            // appel l'api pour la connexion
             const response = await axios.post(
                 `${API_URL}/utilisateurs/connexion`,
                 null,
@@ -47,22 +50,22 @@ const Connexion = () => {
             );
 
             console.log('Connexion réussie:', response.data);
-            
-            // Déterminer le rôle de l'utilisateur
+
+            // détermine le rôle de l'utilisateur
             const role = determineUserRole(response.data);
-            
-            // Ajouter le rôle aux données utilisateur
+
+            // ajoute le rôle à l'objet utilisateur
             const userWithRole = {
                 ...response.data,
                 role: role
             };
-            
+
             // Stocker dans le localStorage
             localStorage.setItem('user', JSON.stringify(userWithRole));
-            
+
             console.log('Utilisateur avec rôle:', userWithRole);
-            
-            // Forcer le rechargement de la page pour mettre à jour le Header
+
+            // accès au dashboard en fonction du rôle
             if (role === 'ADMIN') {
                 window.location.href = '/dashboard/admin';
             } else if (role === 'FORMATEUR') {
@@ -70,10 +73,11 @@ const Connexion = () => {
             } else if (role === 'APPRENANT') {
                 window.location.href = '/dashboard/apprenant';
             }
-            
+
         } catch (err) {
             console.error('Erreur de connexion:', err);
-            
+
+            // gestion des erreurs
             if (err.response && err.response.status === 401) {
                 setError('Email ou mot de passe incorrect');
             } else if (err.response && err.response.status === 500) {
@@ -91,19 +95,16 @@ const Connexion = () => {
             <div className="container mx-auto mb-52 px-4">
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
-                        <div 
+                        <div
                             className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
-                            style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
-                        >
-                            
+                            style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}>
                             <div className="md:w-1/2 flex flex-col p-10 lg:p-16 text-white">
                                 <h2 className="text-5xl lg:text-6xl font-bold mb-6 text-uppercase">Bienvenue</h2>
                                 <h4 className="text-xl font-light mb-6 tracking-widest uppercase">
                                     Débutez votre reconversion
                                 </h4>
                                 <p className="text-sm leading-relaxed opacity-90">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce convallis ac velit non porttitor. Quisque eu convallis massa. Praesent feugiat iaculis nunc.
-                                </p>
+                                    Découvrez des parcours variés pour acquérir des compétences concrètes et réussir votre reconversion.                                </p>
                             </div>
 
                             <div className="md:w-1/2 p-10 lg:p-16">
@@ -117,7 +118,6 @@ const Connexion = () => {
                                             {error}
                                         </div>
                                     )}
-
                                     <div>
                                         <input
                                             type="email"
@@ -146,10 +146,10 @@ const Connexion = () => {
 
                                     <div className="flex items-center justify-between mt-4">
                                         <div className="flex items-center">
-                                            <input 
-                                                id="souvenir" 
-                                                name="souvenir" 
-                                                type="checkbox" 
+                                            <input
+                                                id="souvenir"
+                                                name="souvenir"
+                                                type="checkbox"
                                                 className="accent-purple-600/25 hover:accent-purple-600 h-4 w-4 border-gray-500 focus:ring-purple-600"
                                             />
                                             <label htmlFor="souvenir" className='ml-2 text-xs text-gray-500 font-bold'>
@@ -180,8 +180,8 @@ const Connexion = () => {
                                             <div className="flex-grow border-t-2 border-[#A2A2A2] rounded-lg"></div>
                                         </div>
 
-                                        <a 
-                                            href="/Inscription" 
+                                        <a
+                                            href="/Inscription"
                                             className="no-underline block w-full py-3 text-base text-center text-[#A2A2A2] font-bold rounded-2xl border-2 border-[#A2A2A2] hover:border-[#9F00D7] hover:border-4 hover:text-[#9F00D7] transition-all transform active:scale-[0.98]"
                                         >
                                             S'inscrire

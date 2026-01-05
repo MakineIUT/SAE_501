@@ -8,14 +8,13 @@ export default function FormationDetailsModal({ formation, close }) {
   const [selectedSession, setSelectedSession] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // RÉCUPÉRATION DU USER
+  // récupérer user
   const rawUser = localStorage.getItem('user');
   const user = rawUser ? JSON.parse(rawUser) : null;
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
   const isConnected = !!idApprenant;
 
   const handleInscription = async () => {
-    // SÉCURITÉ : Redirection vers inscription
     if (!isConnected) {
       navigate("/inscription");
       return;
@@ -34,13 +33,13 @@ export default function FormationDetailsModal({ formation, close }) {
       );
 
       if (!response.ok) throw new Error("Erreur lors de l'inscription");
-
-      alert("✅ Inscription validée !");
+      //réponse réussie puis renvoie au dashboard 
+      alert("Inscription validée !");
       close();
       navigate("/dashboard/apprenant");
 
     } catch (err) {
-      alert("❌ Erreur : " + err.message);
+      alert("Erreur : " + err.message);
     } finally {
       setLoading(false);
     }
@@ -75,7 +74,7 @@ export default function FormationDetailsModal({ formation, close }) {
           </div>
         </div>
 
-        {/* Contenu */}
+        {/* Contenu des informations de la session (appel api) */}
         <div className="p-8">
           <div className="grid grid-cols-3 gap-5 mb-8">
             <InfoCard icon="💰" label="Prix" value={formation.prix} />
@@ -125,6 +124,7 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
+// cmposant pour chaque session
 function SessionCard({ session, isSelected, onSelect }) {
   const isComplet = session.placesDisponibles <= 0;
   return (
