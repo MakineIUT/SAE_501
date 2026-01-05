@@ -36,7 +36,6 @@ function App() {
       <Route path='/dashboard/formateur' element={<DashboardFormateur />} />
       <Route path='/apropos' element={<Apropos />} />
       <Route path='/paiement' element={<Paiement />} />
-      {/* <Route path='/panier' element={<Panier />} /> */}
     </Routes>
 
     <Footer />

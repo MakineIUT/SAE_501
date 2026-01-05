@@ -8,12 +8,22 @@ export default function FormationCard({ formation, onOpenDetails }) {
   const [selectedSession, setSelectedSession] = useState(null);
 
   const handleInscription = () => {
+    // 1. D'abord, on vérifie si l'utilisateur est connecté
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      // SI PAS CONNECTÉ -> On envoie vers l'inscription
+      navigate("/inscription");
+      return;
+    }
+
+    // 2. Si connecté, on vérifie la session
     if (!selectedSession) {
       alert("Veuillez sélectionner une session avant de vous inscrire.");
       return;
     }
     
-    // Navigue vers la page de paiement avec la formation et la session sélectionnée
+    // 3. Si tout est bon, on va au paiement
     navigate("/paiement", { 
       state: { 
         formation: formation,
