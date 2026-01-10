@@ -9,7 +9,7 @@ import DashboardApprenant from "./pages/DashboardApprenant.jsx";
 import DashboardFormateur from "./pages/DashboardFormateur.jsx";
 import Formations from "./pages/Formations.jsx";
 import Inscription from "./pages/Inscription.jsx";
-import Paiement from "./pages/Paiement.jsx";
+// import Paiement from "./pages/Paiement.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
 import Attestation from './components/Attestation.jsx';

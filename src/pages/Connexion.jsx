@@ -3,20 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_URL from '../api.js';
 
+// composant de la page de connexion
 const Connexion = () => {
     const navigate = useNavigate();
     const [credentials, setCredentials] = useState({
         email: '',
         password: ''
     });
+    
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // gestion des changements dans les champs du formulaire
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
         setError('');
     };
 
+    // déterminer le rôle de l'utilisateur
     const determineUserRole = (userData) => {
         if (userData.idAdmin !== undefined && userData.idAdmin !== null) {
             return 'ADMIN';
@@ -32,7 +36,7 @@ const Connexion = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-
+        
         try {
             const response = await axios.post(
                 `${API_URL}/utilisateurs/connexion`,
@@ -56,7 +60,6 @@ const Connexion = () => {
             localStorage.setItem('user', JSON.stringify(userWithRole));
             console.log('Utilisateur avec rôle:', userWithRole);
 
-            // ✅ Utiliser navigate() au lieu de window.location.href
             if (role === 'ADMIN') {
                 navigate('/dashboard/admin');
             } else if (role === 'FORMATEUR') {

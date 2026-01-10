@@ -10,51 +10,54 @@ export default function Attestation() {
   const user = JSON.parse(localStorage.getItem('user'));
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
 
+
   useEffect(() => {
     if (idApprenant) {
       chargerAttestations();
     }
   }, [idApprenant]);
 
+  // constante pour charger les attestations
   const chargerAttestations = async () => {
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/attestations/apprenant/${idApprenant}`);
       const data = await response.json();
-      console.log("✅ Attestations:", data);
+      console.log("Attestations:", data);
       setAttestations(data);
     } catch (err) {
-      console.error("❌ Erreur chargement attestations:", err);
+      console.error("Erreur chargement attestations:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // constante pour générer les attestations automatiquement
   const genererAttestations = async () => {
     try {
       setGenerating(true);
       const response = await fetch(`${API_URL}/attestations/generer-auto/${idApprenant}`, {
         method: "POST"
       });
-      
+      // Récupérer la réponse JSON
       const data = await response.json();
       
       if (response.ok) {
-        alert(`✅ ${data.message}`);
+        alert(`${data.message}`);
         await chargerAttestations();
       } else {
-        alert("❌ Erreur lors de la génération");
+        alert("Erreur lors de la génération");
       }
     } catch (err) {
-      console.error("❌ Erreur:", err);
-      alert("❌ Erreur lors de la génération des attestations");
+      console.error("Erreur:", err);
+      alert("Erreur lors de la génération des attestations");
     } finally {
       setGenerating(false);
     }
   };
 
   const telechargerAttestation = (attestation) => {
-    // On va créer un PDF côté client
+    // on va créer un PDF côté client
     genererPDF(attestation);
   };
 
@@ -64,6 +67,7 @@ export default function Attestation() {
     // Convertir le logo en base64 pour l'inclure dans le PDF
     const logoPath = new URL('../assets/logotritech.jpg', import.meta.url).href;
     
+    // style de l'attestaion (html + css) en utilisant les données de l'api
     const contenuHTML = `
       <!DOCTYPE html>
       <html>
@@ -259,7 +263,7 @@ export default function Attestation() {
       </body>
       </html>
     `;
-    
+    // écrire le contenu dans la nouvelle fenêtre
     printWindow.document.write(contenuHTML);
     printWindow.document.close();
     
@@ -268,6 +272,7 @@ export default function Attestation() {
     }, 250);
   };
 
+  // affichage pendant le chargement
   if (loading) {
     return (
       <div style={{ textAlign: "center", padding: "60px" }}>
@@ -285,6 +290,7 @@ export default function Attestation() {
     );
   }
 
+  // affichage principal
   return (
     <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
       <div style={{ marginBottom: "30px" }}>
@@ -369,24 +375,6 @@ export default function Attestation() {
                 overflow: "hidden"
               }}
             >
-              {/* Badge de succès */}
-              <div style={{
-                position: "absolute",
-                top: "15px",
-                right: "15px",
-                background: "#4caf50",
-                color: "#fff",
-                padding: "5px 15px",
-                borderRadius: "20px",
-                fontSize: "0.75rem",
-                fontWeight: "bold",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px"
-              }}>
-                <CheckCircle size={14} />
-                VALIDÉ
-              </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginTop: "10px" }}>
                 <div style={{ flex: 1 }}>
@@ -418,7 +406,7 @@ export default function Attestation() {
                     </div>
                   </div>
                 </div>
-
+                {/* Bouton de téléchargement */}
                 <button
                   onClick={() => telechargerAttestation(att)}
                   style={{
@@ -446,7 +434,9 @@ export default function Attestation() {
             </div>
           ))}
         </div>
-      ) : (
+      ) : 
+      // affichage si aucune attestation n'est disponible
+      (
         <div style={{
           background: "#fff",
           padding: "60px 40px",

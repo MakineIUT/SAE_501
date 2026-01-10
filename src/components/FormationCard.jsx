@@ -5,13 +5,13 @@ export default function FormationCard({ formation, onOpenDetails }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState(null);
 
-  // ✅ Ouverture de la modale directement (pas de navigation vers /paiement)
+  // ouverture de la modale directement (pas de navigation vers /paiement)
   const handleInscription = () => {
-    // Vérifier si l'utilisateur est connecté
+    // vérifier si l'utilisateur est connecté
     const user = localStorage.getItem("user");
 
     if (!user) {
-      // Si pas connecté, la modale redirigera vers inscription
+      // si pas connecté, la modale redirigera vers inscription
       onOpenDetails(formation);
       return;
     }
@@ -20,8 +20,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
       alert("Veuillez sélectionner une session avant de vous inscrire.");
       return;
     }
-    
-    // Ouvrir la modale avec la session présélectionnée
+    // ouvrir la modale avec la session présélectionnée
     onOpenDetails(formation, selectedSession);
   };
 
@@ -62,7 +61,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
               <span className="font-extrabold text-xs tracking-wider uppercase">Sessions</span>
               {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
-
+            
             {isOpen && (
               <div className="bg-white border-t border-gray-100 max-h-40 overflow-y-auto">
                 {formation.sessions && formation.sessions.length > 0 ? (

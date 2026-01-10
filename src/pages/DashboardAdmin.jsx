@@ -24,7 +24,7 @@ export default function DashboardAdmin() {
       setLoading(true);
       setError(null);
       
-      console.log("🔄 Chargement des utilisateurs...");
+      console.log("Chargement des utilisateurs...");
       const response = await fetch(`${API_URL}/admin/utilisateurs`);
       
       if (!response.ok) {
@@ -32,7 +32,7 @@ export default function DashboardAdmin() {
       }
       
       const data = await response.json();
-      console.log("✅ Données reçues:", data);
+      console.log("Données reçues:", data);
       
       // séparer les utilisateurs par type
       const formateursList = data.filter(u => 
@@ -53,7 +53,7 @@ export default function DashboardAdmin() {
       setApprenants(apprenantsList);
       
     } catch (err) {
-      console.error("❌ Erreur de chargement:", err);
+      console.error("Erreur de chargement:", err);
       setError("Impossible de charger les données. Vérifiez que le backend est lancé sur " + API_URL);
     } finally {
       setLoading(false);
@@ -74,7 +74,7 @@ export default function DashboardAdmin() {
   // Ajout d'un utilisateur
   const handleAdd = async (user) => {
     try {
-      console.log("➕ Ajout utilisateur:", user);
+      console.log("Ajout utilisateur:", user);
 
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -90,23 +90,23 @@ export default function DashboardAdmin() {
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("✅ Utilisateur ajouté");
-      alert("✅ Utilisateur ajouté avec succès !");
+      console.log("Utilisateur ajouté");
+      alert("Utilisateur ajouté avec succès !");
       
       await chargerDonnees();
       setSelectedUser(null);
       setMode(null);
       
     } catch (err) {
-      console.error("❌ Erreur ajout:", err);
-      alert("❌ Erreur : " + err.message);
+      console.error("Erreur ajout:", err);
+      alert("Erreur : " + err.message);
     }
   };
 
   // modification d'un utilisateur
   const handleEdit = async (user) => {
     try {
-      console.log("✏️ Modification utilisateur:", user);
+      console.log("Modification utilisateur:", user);
       
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -121,27 +121,27 @@ export default function DashboardAdmin() {
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("✅ Utilisateur modifié");
-      alert("✅ Utilisateur modifié avec succès !");
+      console.log("Utilisateur modifié");
+      alert("Utilisateur modifié avec succès !");
       
       await chargerDonnees();
       setSelectedUser(null);
       setMode(null);
       
     } catch (err) {
-      console.error("❌ Erreur modification:", err);
-      alert("❌ Erreur : " + err.message);
+      console.error("Erreur modification:", err);
+      alert("Erreur : " + err.message);
     }
   };
 
   // suppression d'un utilisateur
   const handleDelete = async (id) => {
-    if (!window.confirm("⚠️ Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
       return;
     }
     
     try {
-      console.log("🗑️ Suppression ID:", id);
+      console.log("Suppression ID:", id);
       
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
@@ -154,14 +154,14 @@ export default function DashboardAdmin() {
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("✅ Utilisateur supprimé");
-      alert("✅ Utilisateur supprimé avec succès !");
+      console.log("Utilisateur supprimé");
+      alert("Utilisateur supprimé avec succès !");
       
       await chargerDonnees();
       
     } catch (err) {
-      console.error("❌ Erreur suppression:", err);
-      alert("❌ Erreur : " + err.message);
+      console.error("Erreur suppression:", err);
+      alert("Erreur : " + err.message);
     }
   };
 
@@ -209,9 +209,9 @@ export default function DashboardAdmin() {
           {/* Message d'erreur lors du chargement */}
           {error && (
             <div style={errorBoxStyle}>
-              <strong>⚠️ {error}</strong>
+              <strong>{error}</strong>
               <button onClick={chargerDonnees} style={retryBtnStyle}>
-                🔄 Réessayer
+                Réessayer
               </button>
             </div>
           )}
@@ -466,7 +466,7 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
           
           {mode === "edit" && (
             <p style={{ fontSize: "0.85rem", color: "#999", marginTop: "8px" }}>
-              💡 Laissez vide pour conserver le mot de passe actuel
+              Laissez vide pour conserver le mot de passe actuel
             </p>
           )}
         </div>

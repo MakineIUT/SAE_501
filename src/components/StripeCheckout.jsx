@@ -3,16 +3,17 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { X, CreditCard, Lock } from 'lucide-react';
 import stripePromise from '../stripe.js';
 
-// Composant du formulaire de paiement
+// composant du formulaire de paiement
 function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // gestion de la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!stripe || !elements) {
       return;
     }
@@ -22,8 +23,8 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
 
     try {
       const cardElement = elements.getElement(CardElement);
-      
-      // Créer un payment method
+
+      // création d'un payment method
       const { error: stripeError, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: cardElement,
@@ -35,15 +36,12 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
         return;
       }
 
-      // ✅ Paiement réussi !
+      // paiement réussi !
       console.log('Payment Method créé:', paymentMethod.id);
-      
-      // ⚠️ EN PRODUCTION : Envoyez paymentMethod.id à votre backend
-      // pour créer un PaymentIntent et confirmer le paiement
-      
-      // Simulation d'attente
+
+      // simulation d'attente
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       alert('Paiement effectué avec succès !');
       onSuccess(paymentMethod);
 
@@ -55,18 +53,19 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
     }
   };
 
+  // rendu du formulaire
   return (
     <form onSubmit={handleSubmit} style={{ width: '100%' }}>
       <div style={{ marginBottom: '30px' }}>
         <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px', color: '#333' }}>
           Récapitulatif de la commande
         </h3>
-        
+
         <div style={{ background: '#f8f8f8', padding: '20px', borderRadius: '15px', marginBottom: '20px' }}>
           {inscriptions.map((insc, idx) => (
-            <div key={idx} style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
+            <div key={idx} style={{
+              display: 'flex',
+              justifyContent: 'space-between',
               padding: '10px 0',
               borderBottom: idx < inscriptions.length - 1 ? '1px solid #ddd' : 'none'
             }}>
@@ -74,10 +73,10 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
               <span style={{ fontWeight: 'bold' }}>{insc.formation?.prix} €</span>
             </div>
           ))}
-          
-          <div style={{ 
-            marginTop: '15px', 
-            paddingTop: '15px', 
+
+          <div style={{
+            marginTop: '15px',
+            paddingTop: '15px',
             borderTop: '2px solid rgba(130, 3, 192, 1)',
             display: 'flex',
             justifyContent: 'space-between',
@@ -92,10 +91,10 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
       </div>
 
       <div style={{ marginBottom: '25px' }}>
-        <label style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          gap: '10px', 
+        <label style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
           marginBottom: '10px',
           fontWeight: '600',
           color: '#333'
@@ -103,14 +102,14 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
           <CreditCard size={20} />
           Informations de carte bancaire
         </label>
-        
-        <div style={{ 
-          padding: '15px', 
-          border: '2px solid #e0e0e0', 
+
+        <div style={{
+          padding: '15px',
+          border: '2px solid #e0e0e0',
           borderRadius: '10px',
           background: '#fff'
         }}>
-          <CardElement 
+          <CardElement
             options={{
               style: {
                 base: {
@@ -130,22 +129,22 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
       </div>
 
       {error && (
-        <div style={{ 
-          padding: '12px', 
-          background: '#fee', 
-          border: '1px solid #fcc', 
+        <div style={{
+          padding: '12px',
+          background: '#fee',
+          border: '1px solid #fcc',
           borderRadius: '8px',
           color: '#c00',
           marginBottom: '20px',
           fontSize: '0.9rem'
         }}>
-         {error}
+          {error}
         </div>
       )}
 
-      <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
         gap: '8px',
         padding: '12px',
         background: '#f0f9ff',
@@ -178,7 +177,7 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
         >
           {loading ? 'Traitement...' : `Payer ${totalPrice} €`}
         </button>
-        
+
         <button
           type="button"
           onClick={onCancel}
@@ -197,14 +196,14 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
           Annuler
         </button>
       </div>
-
-      <p style={{ 
-        marginTop: '20px', 
-        fontSize: '0.8rem', 
-        color: '#999', 
-        textAlign: 'center' 
+      {/* test sans le backend*/}
+      <p style={{
+        marginTop: '20px',
+        fontSize: '0.8rem',
+        color: '#999',
+        textAlign: 'center'
       }}>
-        Mode test : Utilisez 4242 4242 4242 4242 avec n'importe quelle date future
+        Mode test : Utilisez 4242 4242 4242 4242 avec n'importe quelle date et cvc.
       </p>
     </form>
   );
@@ -213,7 +212,7 @@ function CheckoutForm({ totalPrice, inscriptions, onSuccess, onCancel }) {
 // Composant principal avec la modale
 export default function StripeCheckout({ totalPrice, inscriptions, onSuccess, onClose }) {
   return (
-    <div 
+    <div
       onClick={onClose}
       style={{
         position: 'fixed',
@@ -226,7 +225,7 @@ export default function StripeCheckout({ totalPrice, inscriptions, onSuccess, on
         padding: '20px'
       }}
     >
-      <div 
+      <div
         onClick={(e) => e.stopPropagation()}
         style={{
           background: '#fff',
@@ -266,7 +265,7 @@ export default function StripeCheckout({ totalPrice, inscriptions, onSuccess, on
         </h2>
 
         <Elements stripe={stripePromise}>
-          <CheckoutForm 
+          <CheckoutForm
             totalPrice={totalPrice}
             inscriptions={inscriptions}
             onSuccess={onSuccess}

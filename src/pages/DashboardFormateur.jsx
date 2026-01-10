@@ -2,18 +2,27 @@ import { useState, useEffect } from "react";
 import { User, BookOpen, LayoutDashboard, Save, CheckCircle } from 'lucide-react';
 import API_URL from "../api.js";
 
+// Composant principal du dashboard formateur
 export default function DashboardFormateur() {
+  // État pour l'onglet actif du menu
   const [menu, setMenu] = useState("sessions");
+  // État pour l'élément sélectionné (apprenant ou session)
   const [selected, setSelected] = useState(null);
+  // État pour la liste des sessions
   const [sessions, setSessions] = useState([]);
+  // État pour la liste des apprenants
   const [apprenants, setApprenants] = useState([]);
+  // État pour le chargement
   const [loading, setLoading] = useState(true);
+  // État pour les erreurs
   const [error, setError] = useState(null);
+  // État pour la session sélectionnée
   const [selectedSession, setSelectedSession] = useState(null);
 
   const user = JSON.parse(localStorage.getItem('user'));
   const idFormateur = user?.idFormateur || user?.idUtilisateur;
 
+  // Effet pour charger les sessions au montage du composant
   useEffect(() => {
     if (idFormateur) {
       chargerSessions();
@@ -23,6 +32,7 @@ export default function DashboardFormateur() {
     }
   }, [idFormateur]);
 
+  // Fonction pour charger les sessions du formateur
   const chargerSessions = async () => {
     try {
       setLoading(true);
@@ -41,6 +51,7 @@ export default function DashboardFormateur() {
     }
   };
 
+  // Fonction pour charger les apprenants d'une session
   const chargerApprenants = async (idSession) => {
     try {
       const resApp = await fetch(`${API_URL}/formateurs/sessions/${idSession}/apprenants`);
@@ -63,17 +74,19 @@ export default function DashboardFormateur() {
     }
   };
 
+  // Fonction pour changer de session
   const changerSession = (id) => {
     setSelectedSession(id);
     setSelected(null);
     chargerApprenants(id);
   };
 
+  // Fonction pour sauvegarder une note
   const sauvegarderNote = async (data) => {
     try {
-      console.log("🔍 DEBUG - idFormateur:", idFormateur);
-      console.log("🔍 DEBUG - data:", data);
-      console.log("🔍 DEBUG - selectedSession:", selectedSession);
+      console.log("DEBUG - idFormateur:", idFormateur);
+      console.log("DEBUG - data:", data);
+      console.log("DEBUG - selectedSession:", selectedSession);
       
       const payload = {
         idApprenant: data.idApprenant,
@@ -82,7 +95,7 @@ export default function DashboardFormateur() {
         note: parseFloat(data.note)
       };
       
-      console.log("📤 Envoi:", payload);
+      console.log("Envoi:", payload);
       
       const response = await fetch(`${API_URL}/formateurs/notes`, {
         method: "POST",
@@ -90,15 +103,15 @@ export default function DashboardFormateur() {
         body: JSON.stringify(payload)
       });
       if (response.ok) {
-        alert("✅ Note enregistrée !");
+        alert("Note enregistrée !");
         chargerApprenants(selectedSession);
         setSelected(null);
       } else {
         const errorText = await response.text();
-        alert("❌ Erreur : " + errorText);
+        alert("Erreur : " + errorText);
       }
     } catch (err) { 
-      alert("❌ Erreur note : " + err.message); 
+      alert("Erreur note : " + err.message); 
     }
   };
 
@@ -149,14 +162,19 @@ export default function DashboardFormateur() {
 }
 
 function SessionDetail({ session, idFormateur, onBack }) {
+  // État pour la liste des apprenants avec présences
   const [list, setList] = useState([]);
+  // État pour le chargement
   const [loading, setLoading] = useState(true);
+  // État pour la sauvegarde en cours
   const [saving, setSaving] = useState(false);
 
+  // Effet pour charger les présences au montage
   useEffect(() => {
     chargerPresences();
   }, [session.idSession]);
 
+  // Fonction pour charger les présences des apprenants
   const chargerPresences = async () => {
     try {
       const resApp = await fetch(`${API_URL}/formateurs/sessions/${session.idSession}/apprenants`);
@@ -177,6 +195,7 @@ function SessionDetail({ session, idFormateur, onBack }) {
     }
   };
 
+  // Fonction pour basculer la présence d'un apprenant
   const handleCheck = (app) => {
     setList(list.map(item => 
       item.idApprenant === app.idApprenant 
@@ -185,6 +204,7 @@ function SessionDetail({ session, idFormateur, onBack }) {
     ));
   };
 
+  // Fonction pour sauvegarder les présences
   const sauvegarderPresences = async () => {
     setSaving(true);
     try {
@@ -202,11 +222,11 @@ function SessionDetail({ session, idFormateur, onBack }) {
       );
 
       await Promise.all(promises);
-      alert("✅ Présences enregistrées avec succès !");
+      alert("Présences enregistrées avec succès !");
       await chargerPresences();
     } catch (err) {
       console.error("Erreur présences", err);
-      alert("❌ Erreur lors de l'enregistrement");
+      alert("Erreur lors de l'enregistrement");
     } finally {
       setSaving(false);
     }
@@ -262,16 +282,18 @@ function SessionDetail({ session, idFormateur, onBack }) {
 }
 
 function Notation({ apprenant, onBack, onSave }) {
+  // État pour la note
   const [note, setNote] = useState(apprenant.note ?? "");
 
+  // Fonction pour soumettre la note
   const handleSubmit = () => {
     if (!note || note < 0 || note > 20) {
-      alert("⚠️ Veuillez entrer une note entre 0 et 20");
+      alert("Veuillez entrer une note entre 0 et 20");
       return;
     }
     
-    console.log("🎯 Apprenant complet:", apprenant);
-    console.log("🎯 ID Apprenant:", apprenant.idApprenant);
+    console.log("Apprenant complet:", apprenant);
+    console.log("ID Apprenant:", apprenant.idApprenant);
     
     onSave({ 
       idApprenant: apprenant.idApprenant || apprenant.idUtilisateur,
@@ -407,6 +429,7 @@ const styles = {
 };
 
 function MenuItem({ label, icon, active, onClick }) {
+  // Composant pour un élément du menu latéral
   return (
     <div onClick={onClick} style={{
       display: "flex",
@@ -431,6 +454,7 @@ function MenuItem({ label, icon, active, onClick }) {
 }
 
 function Loader() { 
+  // Composant d'indicateur de chargement
   return (
     <div style={{ textAlign: "center", padding: "60px" }}>
       <div style={{ 
@@ -448,6 +472,7 @@ function Loader() {
 }
 
 function ApprenantsList({ apprenants, onSelect }) {
+  // Composant pour afficher la liste des apprenants
   return (
     <div>
       <h2 style={{ fontSize: "1.8rem", marginBottom: "25px", color: "#333" }}>Liste des Apprenants</h2>
@@ -484,6 +509,7 @@ function ApprenantsList({ apprenants, onSelect }) {
 }
 
 function SessionsList({ sessions, onSelect }) {
+  // Composant pour afficher la liste des sessions
   return (
     <div>
       <h2 style={{ fontSize: "1.8rem", marginBottom: "25px", color: "#333" }}>Mes Sessions</h2>
@@ -503,7 +529,7 @@ function SessionsList({ sessions, onSelect }) {
                 Session #{s.idSession}
               </h3>
               <p style={{ margin: "5px 0 0 0", color: "#666", fontSize: "0.9rem" }}>
-                📍 {s.lieu?.ville || "En ligne"}
+                {s.lieu?.ville || "En ligne"}
               </p>
             </div>
             <button onClick={() => onSelect(s)} style={{ 
@@ -525,6 +551,7 @@ function SessionsList({ sessions, onSelect }) {
 }
 
 function ProfilFormateur({ formateur }) {
+  // Composant pour afficher le profil du formateur
   return (
     <div style={{ 
       background: "#fff", 
@@ -544,6 +571,7 @@ function ProfilFormateur({ formateur }) {
 }
 
 function FormCard({ children }) {
+  // Composant wrapper pour les formulaires
   return (
     <div style={{ 
       maxWidth: "700px", 

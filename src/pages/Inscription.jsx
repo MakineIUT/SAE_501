@@ -3,28 +3,35 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import API_URL from '../api.js';
 
+// Composant de page d'inscription
 const Inscription = () => {
+    // Hook de navigation
     const navigate = useNavigate();
+    // État pour les données du formulaire
     const [formData, setFormData] = useState({
         email: '',
         password: '',
         nom: '',
         prenom: ''
     });
+    // État pour les erreurs
     const [error, setError] = useState('');
+    // État pour le chargement
     const [loading, setLoading] = useState(false);
 
+    // Fonction pour gérer les changements dans les champs
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
         setError('');
     };
 
+    // Fonction pour soumettre le formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
-        // Validation
+        // Validation des champs
         if (!formData.email || !formData.password || !formData.nom || !formData.prenom) {
             setError('Tous les champs sont obligatoires');
             setLoading(false);
@@ -77,7 +84,7 @@ const Inscription = () => {
             } catch (loginErr) {
                 console.error('Erreur connexion auto:', loginErr);
                 // Si la connexion auto échoue, rediriger vers la page de connexion
-                alert('✅ Inscription réussie ! Veuillez vous connecter.');
+                alert('Inscription réussie ! Veuillez vous connecter.');
                 navigate('/connexion');
             }
 
@@ -96,11 +103,13 @@ const Inscription = () => {
         }
     };
 
+    // Rendu du composant
     return (
         <div className="mt-0 flex items-center justify-center py-12 min-h-[calc(100vh-80px)] bg-gradient-to-r from-[#4500ab] to-[#8700c2]">
             <div className="container mb-52 mx-auto px-4">
                 <div className="flex justify-center">
                     <div className="w-full max-w-5xl">
+                        {/* Section de présentation */}
                         <div
                             className="flex flex-col md:flex-row shadow-2xl border-0 rounded-[2rem] overflow-hidden bg-white bg-center bg-cover"
                             style={{ backgroundImage: "url('/Fond_connexion_SPHERE.png')" }}
@@ -115,6 +124,7 @@ const Inscription = () => {
                                 </p>
                             </div>
 
+                            {/* Section du formulaire */}
                             <div className="md:w-1/2 p-10 lg:p-16 ">
                                 <div className="mb-6">
                                     <h2 className="text-3xl font-bold mb-2 text-black">Inscription</h2>
@@ -129,13 +139,16 @@ const Inscription = () => {
                                     </p>
                                 </div>
 
+                                {/* Formulaire d'inscription */}
                                 <form onSubmit={handleSubmit} className="space-y-4 w-80">
+                                    {/* Affichage des erreurs */}
                                     {error && (
                                         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
                                             {error}
                                         </div>
                                     )}
 
+                                    {/* Champ email */}
                                     <div>
                                         <input
                                             type="email"
@@ -149,6 +162,7 @@ const Inscription = () => {
                                         />
                                     </div>
 
+                                    {/* Champ mot de passe */}
                                     <div>
                                         <input
                                             type="password"
@@ -162,6 +176,7 @@ const Inscription = () => {
                                         />
                                     </div>
 
+                                    {/* Champ nom */}
                                     <div>
                                         <input
                                             type="text"
@@ -175,6 +190,7 @@ const Inscription = () => {
                                         />
                                     </div>
 
+                                    {/* Champ prénom */}
                                     <div className="pb-4">
                                         <input
                                             type="text"
@@ -188,6 +204,7 @@ const Inscription = () => {
                                         />
                                     </div>
 
+                                    {/* Bouton de soumission */}
                                     <div className='mt-0'>
                                         <button
                                             type="submit"

@@ -20,7 +20,7 @@ export default function FormationDetailsModal({ formation, close }) {
     }
 
     if (!selectedSession) {
-      alert("⚠️ Veuillez sélectionner une session");
+      alert("Veuillez sélectionner une session");
       return;
     }
 
@@ -35,19 +35,15 @@ export default function FormationDetailsModal({ formation, close }) {
         const errorText = await response.text();
         throw new Error(errorText || "Erreur lors de l'inscription");
       }
-
-      // ✅ Fermer la modale
       close();
-      
-      // ✅ Afficher un message de succès
+    
       alert("✅ Inscription validée ! Rendez-vous dans votre panier pour finaliser le paiement.");
       
-      // ✅ Rediriger vers le panier (onglet "Achats" du dashboard)
-      // On passe un state pour ouvrir directement l'onglet panier
+      // redirection vers le panier (onglet "Achats" du dashboard)
       navigate("/dashboard/apprenant", { state: { openTab: "panier" } });
 
     } catch (err) {
-      alert("❌ Erreur : " + err.message);
+      alert("Erreur : " + err.message);
     } finally {
       setLoading(false);
     }
@@ -56,16 +52,12 @@ export default function FormationDetailsModal({ formation, close }) {
   return (
     <div
       onClick={close}
-      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-5"
-    >
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-[1000] p-5" >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-[20px] max-w-[900px] w-full max-h-[90vh] overflow-auto relative shadow-2xl"
-      >
-        <button
-          onClick={close}
-          className="absolute top-5 right-5 bg-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md z-10 hover:bg-gray-100 transition-colors"
-        >
+        className="bg-white rounded-[20px] max-w-[900px] w-full max-h-[90vh] overflow-auto relative shadow-2xl">
+        <button onClick={close}
+          className="absolute top-5 right-5 bg-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md z-10 hover:bg-gray-100 transition-colors" >
           <X size={24} color="#666" />
         </button>
 
@@ -90,8 +82,8 @@ export default function FormationDetailsModal({ formation, close }) {
             <InfoCard icon="⏱️" label="Durée" value={formation.duree} />
           </div>
 
-          <h3 className="text-xl font-bold mb-4 text-gray-800">📅 Sessions disponibles</h3>
-          
+          <h3 className="text-xl font-bold mb-4 text-gray-800">Sessions disponibles</h3>
+          {/* Liste des sessions */}
           {formation.sessions && formation.sessions.length > 0 ? (
             <div className="grid gap-3 mb-8">
               {formation.sessions.map((s) => (
@@ -119,7 +111,7 @@ export default function FormationDetailsModal({ formation, close }) {
                   : 'bg-[#A828F6] text-white hover:bg-[#9622dd] shadow-lg hover:shadow-xl'
               }`}
             >
-              {loading ? "⏳ Inscription en cours..." : "✓ Confirmer l'inscription"}
+              {loading ? "Inscription en cours..." : "✓ Confirmer l'inscription"}
             </button>
             <button 
               onClick={close} 
@@ -134,6 +126,7 @@ export default function FormationDetailsModal({ formation, close }) {
   );
 }
 
+// composant pour afficher une carte d'information
 function InfoCard({ icon, label, value }) {
   return (
     <div className="p-5 bg-gray-50 rounded-xl text-center border border-gray-100 hover:border-purple-300 transition-colors">
@@ -144,6 +137,7 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
+// composant pour afficher une session
 function SessionCard({ session, isSelected, onSelect }) {
   const isComplet = session.placesDisponibles <= 0;
   
@@ -167,7 +161,7 @@ function SessionCard({ session, isSelected, onSelect }) {
           <span className={`font-bold ${
             isComplet ? 'text-red-500' : 'text-green-600'
           }`}>
-            {isComplet ? '❌ Complet' : `✓ ${session.placesDisponibles} places`}
+            {isComplet ? 'Complet' : `✓ ${session.placesDisponibles} places`}
           </span>
         </div>
         {isSelected && (
