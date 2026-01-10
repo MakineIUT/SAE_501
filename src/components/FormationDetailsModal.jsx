@@ -8,7 +8,6 @@ export default function FormationDetailsModal({ formation, close }) {
   const [selectedSession, setSelectedSession] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // récupérer user
   const rawUser = localStorage.getItem('user');
   const user = rawUser ? JSON.parse(rawUser) : null;
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
@@ -32,14 +31,23 @@ export default function FormationDetailsModal({ formation, close }) {
         { method: "POST" }
       );
 
-      if (!response.ok) throw new Error("Erreur lors de l'inscription");
-      //réponse réussie puis renvoie au dashboard 
-      alert("Inscription validée !");
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Erreur lors de l'inscription");
+      }
+
+      // ✅ Fermer la modale
       close();
-      navigate("/dashboard/apprenant");
+      
+      // ✅ Afficher un message de succès
+      alert("✅ Inscription validée ! Rendez-vous dans votre panier pour finaliser le paiement.");
+      
+      // ✅ Rediriger vers le panier (onglet "Achats" du dashboard)
+      // On passe un state pour ouvrir directement l'onglet panier
+      navigate("/dashboard/apprenant", { state: { openTab: "panier" } });
 
     } catch (err) {
-      alert("Erreur : " + err.message);
+      alert("❌ Erreur : " + err.message);
     } finally {
       setLoading(false);
     }
@@ -56,7 +64,7 @@ export default function FormationDetailsModal({ formation, close }) {
       >
         <button
           onClick={close}
-          className="absolute top-5 right-5 bg-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md z-10"
+          className="absolute top-5 right-5 bg-white border-none rounded-full w-10 h-10 flex items-center justify-center cursor-pointer shadow-md z-10 hover:bg-gray-100 transition-colors"
         >
           <X size={24} color="#666" />
         </button>
@@ -74,7 +82,7 @@ export default function FormationDetailsModal({ formation, close }) {
           </div>
         </div>
 
-        {/* Contenu des informations de la session (appel api) */}
+        {/* Contenu */}
         <div className="p-8">
           <div className="grid grid-cols-3 gap-5 mb-8">
             <InfoCard icon="💰" label="Prix" value={formation.prix} />
@@ -83,28 +91,40 @@ export default function FormationDetailsModal({ formation, close }) {
           </div>
 
           <h3 className="text-xl font-bold mb-4 text-gray-800">📅 Sessions disponibles</h3>
-          <div className="grid gap-3 mb-8">
-            {formation.sessions?.map((s) => (
-              <SessionCard
-                key={s.idSession}
-                session={s}
-                isSelected={selectedSession?.idSession === s.idSession}
-                onSelect={() => setSelectedSession(s)}
-              />
-            ))}
-          </div>
+          
+          {formation.sessions && formation.sessions.length > 0 ? (
+            <div className="grid gap-3 mb-8">
+              {formation.sessions.map((s) => (
+                <SessionCard
+                  key={s.idSession}
+                  session={s}
+                  isSelected={selectedSession?.idSession === s.idSession}
+                  onSelect={() => setSelectedSession(s)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="p-6 bg-gray-50 rounded-xl text-center text-gray-500 mb-8">
+              Aucune session disponible pour le moment
+            </div>
+          )}
 
           <div className="flex gap-4">
             <button
               onClick={handleInscription}
               disabled={loading || !selectedSession}
               className={`flex-1 p-4 rounded-xl font-bold text-lg transition-all ${
-                loading || !selectedSession ? 'bg-gray-300' : 'bg-[#A828F6] text-white hover:bg-[#9622dd]'
+                loading || !selectedSession 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-[#A828F6] text-white hover:bg-[#9622dd] shadow-lg hover:shadow-xl'
               }`}
             >
-              {loading ? "Inscription en cours..." : "Confirmer l'inscription"}
+              {loading ? "⏳ Inscription en cours..." : "✓ Confirmer l'inscription"}
             </button>
-            <button onClick={close} className="px-8 py-4 bg-gray-100 rounded-xl font-semibold">
+            <button 
+              onClick={close} 
+              className="px-8 py-4 bg-gray-100 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+            >
               Annuler
             </button>
           </div>
@@ -116,32 +136,44 @@ export default function FormationDetailsModal({ formation, close }) {
 
 function InfoCard({ icon, label, value }) {
   return (
-    <div className="p-5 bg-gray-50 rounded-xl text-center border border-gray-100">
+    <div className="p-5 bg-gray-50 rounded-xl text-center border border-gray-100 hover:border-purple-300 transition-colors">
       <div className="text-3xl mb-2">{icon}</div>
-      <div className="text-xs text-gray-500 uppercase font-bold">{label}</div>
-      <div className="text-lg font-bold">{value}</div>
+      <div className="text-xs text-gray-500 uppercase font-bold tracking-wide">{label}</div>
+      <div className="text-lg font-bold text-gray-800">{value}</div>
     </div>
   );
 }
 
-// cmposant pour chaque session
 function SessionCard({ session, isSelected, onSelect }) {
   const isComplet = session.placesDisponibles <= 0;
+  
   return (
     <div
       onClick={!isComplet ? onSelect : null}
-      className={`p-4 border-2 rounded-xl cursor-pointer flex justify-between items-center transition-all ${
-        isSelected ? 'border-purple-500 bg-purple-50' : 'border-gray-200 bg-white'
-      } ${isComplet ? 'opacity-50 cursor-not-allowed' : ''}`}
+      className={`p-4 border-2 rounded-xl transition-all ${
+        isSelected 
+          ? 'border-purple-500 bg-purple-50 shadow-md' 
+          : 'border-gray-200 bg-white hover:border-gray-300'
+      } ${
+        isComplet 
+          ? 'opacity-50 cursor-not-allowed' 
+          : 'cursor-pointer hover:shadow-sm'
+      }`}
     >
-      <div className="flex gap-6 items-center">
-        <span className="font-bold">{session.date}</span>
-        <span className="text-gray-600">{session.ville}</span>
-        <span className={isComplet ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}>
-          {session.placesDisponibles} places
-        </span>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-6 items-center">
+          <span className="font-bold text-gray-800">📅 {session.date}</span>
+          <span className="text-gray-600">📍 {session.ville}</span>
+          <span className={`font-bold ${
+            isComplet ? 'text-red-500' : 'text-green-600'
+          }`}>
+            {isComplet ? '❌ Complet' : `✓ ${session.placesDisponibles} places`}
+          </span>
+        </div>
+        {isSelected && (
+          <span className="text-purple-600 font-bold text-xl">✓</span>
+        )}
       </div>
-      {isSelected && <span className="text-purple-600 font-bold">✓</span>}
     </div>
   );
 }

@@ -12,6 +12,7 @@ import Inscription from "./pages/Inscription.jsx";
 import Paiement from "./pages/Paiement.jsx";
 import Header from "./components/Header.jsx";
 import Footer from "./components/Footer.jsx";
+import Attestation from './components/Attestation.jsx';
 
 
 
@@ -33,6 +34,7 @@ function App() {
       <Route path='/dashboard/formateur' element={<DashboardFormateur />} />
       <Route path='/apropos' element={<Apropos />} />
       <Route path='/paiement' element={<Paiement />} />
+      <Route path='/attestation' element={<Attestation />} />
     </Routes>
 
     <Footer />
