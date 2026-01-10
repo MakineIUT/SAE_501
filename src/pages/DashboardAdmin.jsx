@@ -1,66 +1,254 @@
 import { useState, useEffect } from "react";
 import API_URL from '../api.js';
 
-// composant du dashboard 
+// Composant principal du dashboard administrateur
 export default function DashboardAdmin() {
+  // État pour l'onglet actif (formateurs ou apprenants)
   const [menu, setMenu] = useState("formateurs");
+  // État pour l'utilisateur sélectionné
   const [selectedUser, setSelectedUser] = useState(null);
-  // mode d'action: "add" ou "edit"
+  // État pour le mode (ajout ou modification)
   const [mode, setMode] = useState(null);
-  // listes des utilisateurs
+  // État pour la liste des formateurs
   const [formateurs, setFormateurs] = useState([]);
+  // État pour la liste des apprenants
   const [apprenants, setApprenants] = useState([]);
+  // État pour le chargement
   const [loading, setLoading] = useState(true);
+  // État pour les erreurs
   const [error, setError] = useState(null);
 
-  
+  // Effet pour charger les données au montage et changement de menu
   useEffect(() => {
     chargerDonnees();
   }, [menu]);
 
-  // chargement des données avec l'api 
+  // Fonction pour charger les données des utilisateurs depuis l'API
   const chargerDonnees = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log("Chargement des utilisateurs...");
-      const response = await fetch(`${API_URL}/admin/utilisateurs`);
+      console.log("Tentative de connexion a:", `${API_URL}/admin/utilisateurs`);
+      
+      const response = await fetch(`${API_URL}/admin/utilisateurs`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        mode: 'cors' // Explicitly set CORS mode
+      });
+      
+      console.log("Statut de la reponse:", response.status);
       
       if (!response.ok) {
-        throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error("Erreur API:", errorText);
+        throw new Error(`Erreur ${response.status}: ${errorText || response.statusText}`);
       }
       
-      const data = await response.json();
-      console.log("Données reçues:", data);
+      // Recuperer le texte brut
+      const rawText = await response.text();
+      console.log("Longueur de la reponse:", rawText.length);
       
-      // séparer les utilisateurs par type
-      const formateursList = data.filter(u => 
-        u.idFormateur !== undefined && 
-        u.idFormateur !== null
-      );
+      // Solution radicale : Parser avec une regex pour extraire juste ce qu'on a besoin
+      let data = [];
       
-      // un apprenant est quelqu'un qui n'est NI formateur NI admin
-      const apprenantsList = data.filter(u => 
-        !u.idFormateur &&
-        !u.idAdmin &&     
-        (u.idApprenant !== undefined || u.dateInscription !== undefined) // a au moins un attribut d'apprenant
-      );
+      try {
+        // Methode 1 : Essayer de parser normalement apres nettoyage agressif
+        let cleanedText = rawText;
+        
+        // Trouver tous les ] et couper apres le premier qui semble valide
+        const matches = [...cleanedText.matchAll(/\]/g)];
+        if (matches.length > 0) {
+          // Prendre le premier ] qui est suivi de peu de caracteres (probablement la vraie fin)
+          for (let i = 0; i < matches.length; i++) {
+            const endPos = matches[i].index + 1;
+            const remaining = cleanedText.length - endPos;
+            
+            // Si apres le ] il reste moins de 200 caracteres de pollution
+            if (remaining < 200 || i === 0) {
+              cleanedText = cleanedText.substring(0, endPos);
+              console.log(`Coupe a la position ${endPos}, reste ${remaining} chars`);
+              break;
+            }
+          }
+        }
+        
+        // Nettoyer les patterns invalides
+        cleanedText = cleanedText.replace(/\}\}\}/g, '}}');
+        cleanedText = cleanedText.replace(/\}\}\]/g, '}]');
+        cleanedText = cleanedText.replace(/\]\]\]/g, ']]');
+        
+        try {
+          data = JSON.parse(cleanedText);
+          console.log("Parsing reussi apres nettoyage!");
+        } catch (e) {
+          console.log("Parsing echoue, tentative manuelle...");
+          
+          // Methode 2 : Parser manuellement les objets utilisateur
+          // Regex pour trouver les utilisateurs avec leurs proprietes de base
+          const userPattern = /"idUtilisateur":\s*(\d+)[\s\S]*?"nom":\s*"([^"]*)"[\s\S]*?"prenom":\s*"([^"]*)"[\s\S]*?"email":\s*"([^"]*)"/g;
+          
+          let match;
+          const users = [];
+          while ((match = userPattern.exec(rawText)) !== null) {
+            const [, idUtilisateur, nom, prenom, email] = match;
+            
+            // Extraire l'objet complet autour de cette position
+            const startPos = rawText.lastIndexOf('{', match.index);
+            let endPos = rawText.indexOf('},', match.index);
+            if (endPos === -1) endPos = rawText.indexOf('}]', match.index);
+            if (endPos === -1) endPos = rawText.indexOf('}', match.index + 100);
+            
+            if (startPos !== -1 && endPos !== -1) {
+              const userJson = rawText.substring(startPos, endPos + 1);
+              
+              try {
+                const user = JSON.parse(userJson);
+                users.push(user);
+              } catch (e) {
+                // Si le parsing echoue, creer un objet minimal
+                const phoneMatch = userJson.match(/"telephone":\s*"([^"]*)"/);
+                const idFormateurMatch = userJson.match(/"idFormateur":\s*(\d+)/);
+                const idApprenantMatch = userJson.match(/"idApprenant":\s*(\d+)/);
+                const idAdminMatch = userJson.match(/"idAdmin":\s*(\d+)/);
+                
+                users.push({
+                  idUtilisateur: parseInt(idUtilisateur),
+                  nom,
+                  prenom,
+                  email,
+                  telephone: phoneMatch ? phoneMatch[1] : null,
+                  idFormateur: idFormateurMatch ? parseInt(idFormateurMatch[1]) : null,
+                  idApprenant: idApprenantMatch ? parseInt(idApprenantMatch[1]) : null,
+                  idAdmin: idAdminMatch ? parseInt(idAdminMatch[1]) : null
+                });
+              }
+            }
+          }
+          
+          if (users.length > 0) {
+            // Dedupliquer les utilisateurs par idUtilisateur
+            const uniqueUsers = [];
+            const seenIds = new Set();
+            
+            for (const user of users) {
+              if (!seenIds.has(user.idUtilisateur)) {
+                seenIds.add(user.idUtilisateur);
+                uniqueUsers.push(user);
+              }
+            }
+            
+            data = uniqueUsers;
+            console.log("Extraction manuelle reussie:", users.length, "trouves,", uniqueUsers.length, "uniques");
+          } else {
+            throw new Error("Impossible d'extraire les utilisateurs");
+          }
+        }
+        
+      } catch (error) {
+        console.error("Erreur complete:", error);
+        
+        // Methode 3 : Solution de secours - donnees mockees pour permettre de travailler
+        console.log("Utilisation de donnees de secours");
+        alert("Le serveur retourne des donnees mal formees. Contactez l'administrateur backend pour corriger l'entite Attestation (ajoutez @JsonIgnore sur les relations circulaires).\n\nEn attendant, un mode de secours est active.");
+        
+        data = []; // Tableau vide pour eviter le crash
+      }
+      
+      console.log("Nombre d'utilisateurs charges:", data.length);
+      
+      // Afficher la structure du premier utilisateur pour debug
+      if (data.length > 0) {
+        console.log("Structure du premier utilisateur:", Object.keys(data[0]));
+        console.log("Premier utilisateur complet:", data[0]);
+        
+        // Afficher tous les IDs presents
+        data.forEach((u, idx) => {
+          console.log(`User ${idx}:`, {
+            id: u.idUtilisateur,
+            nom: u.nom,
+            formateur: u.idFormateur,
+            apprenant: u.idApprenant,
+            admin: u.idAdmin
+          });
+        });
+      }
+      
+      // Filtrage plus souple des formateurs
+      const formateursList = data.filter(u => {
+        const isFormateur = u.idFormateur !== undefined && 
+                           u.idFormateur !== null && 
+                           u.idFormateur !== '';
+        if (isFormateur) {
+          console.log("Formateur trouve:", u.nom, u.prenom, "ID:", u.idFormateur);
+        }
+        return isFormateur;
+      });
+      
+      // Filtrage plus souple des apprenants
+      const apprenantsList = data.filter(u => {
+        // Un apprenant = pas formateur ET pas admin
+        const hasNoFormateur = !u.idFormateur || u.idFormateur === null || u.idFormateur === '';
+        const hasNoAdmin = !u.idAdmin || u.idAdmin === null || u.idAdmin === '';
+        
+        // ET a soit un idApprenant, soit une dateInscription, soit juste idUtilisateur
+        const hasApprenantId = u.idApprenant !== undefined && u.idApprenant !== null;
+        const hasDateInscription = u.dateInscription !== undefined && u.dateInscription !== null;
+        const hasUserId = u.idUtilisateur !== undefined && u.idUtilisateur !== null;
+        
+        // Si pas formateur et pas admin, c'est probablement un apprenant
+        const isApprenant = hasNoFormateur && hasNoAdmin && (hasApprenantId || hasDateInscription || hasUserId);
+        
+        if (isApprenant) {
+          console.log("Apprenant trouve:", u.nom, u.prenom, {
+            idApprenant: u.idApprenant,
+            idUtilisateur: u.idUtilisateur,
+            dateInscription: u.dateInscription
+          });
+        } else if (hasNoFormateur && hasNoAdmin) {
+          console.log("Utilisateur sans role clair:", u.nom, u.prenom, {
+            idFormateur: u.idFormateur,
+            idApprenant: u.idApprenant,
+            idAdmin: u.idAdmin,
+            idUtilisateur: u.idUtilisateur
+          });
+        }
+        return isApprenant;
+      });
 
-      console.log(`📊 ${formateursList.length} formateurs, ${apprenantsList.length} apprenants`);
+      console.log(`Resultat: ${formateursList.length} formateurs, ${apprenantsList.length} apprenants`);
       
       setFormateurs(formateursList);
       setApprenants(apprenantsList);
       
     } catch (err) {
-      console.error("Erreur de chargement:", err);
-      setError("Impossible de charger les données. Vérifiez que le backend est lancé sur " + API_URL);
+      console.error("Erreur de chargement complete:", err);
+      
+      // Message d'erreur plus detaille
+      let errorMessage = "Impossible de charger les donnees. ";
+      
+      if (err.message.includes('Failed to fetch')) {
+        errorMessage += "Verifiez que:\n" +
+                       "1. Le backend est lance sur " + API_URL + "\n" +
+                       "2. Les CORS sont correctement configures\n" +
+                       "3. L'URL de l'API est correcte";
+      } else if (err.message.includes('404')) {
+        errorMessage += "L'endpoint /admin/utilisateurs n'existe pas sur le serveur.";
+      } else if (err.message.includes('401') || err.message.includes('403')) {
+        errorMessage += "Probleme d'authentification. Verifiez vos permissions.";
+      } else {
+        errorMessage += err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  
   const users = menu === "formateurs" ? formateurs : apprenants;
 
   // Fonction pour obtenir l'id selon le type d'utilisateur
@@ -71,7 +259,7 @@ export default function DashboardAdmin() {
     return user.id;
   };
 
-  // Ajout d'un utilisateur
+  // Fonction pour ajouter un utilisateur
   const handleAdd = async (user) => {
     try {
       console.log("Ajout utilisateur:", user);
@@ -80,18 +268,21 @@ export default function DashboardAdmin() {
       
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        mode: 'cors',
         body: JSON.stringify(user)
       });
       
-      // gestions des erreurs
       if (!response.ok) {
         const text = await response.text();
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("Utilisateur ajouté");
-      alert("Utilisateur ajouté avec succès !");
+      console.log("Utilisateur ajoute");
+      alert("Utilisateur ajoute avec succes !");
       
       await chargerDonnees();
       setSelectedUser(null);
@@ -103,7 +294,7 @@ export default function DashboardAdmin() {
     }
   };
 
-  // modification d'un utilisateur
+  // Fonction pour modifier un utilisateur
   const handleEdit = async (user) => {
     try {
       console.log("Modification utilisateur:", user);
@@ -112,7 +303,11 @@ export default function DashboardAdmin() {
       
       const response = await fetch(`${API_URL}${endpoint}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        mode: 'cors',
         body: JSON.stringify(user)
       });
       
@@ -121,8 +316,8 @@ export default function DashboardAdmin() {
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("Utilisateur modifié");
-      alert("Utilisateur modifié avec succès !");
+      console.log("Utilisateur modifie");
+      alert("Utilisateur modifie avec succes !");
       
       await chargerDonnees();
       setSelectedUser(null);
@@ -134,9 +329,9 @@ export default function DashboardAdmin() {
     }
   };
 
-  // suppression d'un utilisateur
+  // Fonction pour supprimer un utilisateur
   const handleDelete = async (id) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")) {
+    if (!window.confirm("Etes-vous sur de vouloir supprimer cet utilisateur ?")) {
       return;
     }
     
@@ -146,7 +341,8 @@ export default function DashboardAdmin() {
       const endpoint = menu === "formateurs" ? "/admin/formateurs" : "/admin/apprenants";
       
       const response = await fetch(`${API_URL}${endpoint}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        mode: 'cors'
       });
       
       if (!response.ok) {
@@ -154,8 +350,8 @@ export default function DashboardAdmin() {
         throw new Error(text || `Erreur ${response.status}`);
       }
       
-      console.log("Utilisateur supprimé");
-      alert("Utilisateur supprimé avec succès !");
+      console.log("Utilisateur supprime");
+      alert("Utilisateur supprime avec succes !");
       
       await chargerDonnees();
       
@@ -165,7 +361,7 @@ export default function DashboardAdmin() {
     }
   };
 
-  // enregistrement des actions 
+  // Fonction pour sauvegarder un utilisateur (ajout ou modification)
   const handleSave = (user) => {
     if (mode === "add") {
       handleAdd(user);
@@ -206,18 +402,27 @@ export default function DashboardAdmin() {
 
         {/* CONTENU DASHBOARD */}
         <div style={{ flex: 1, padding: "40px", overflowY: "auto" }}>
-          {/* Message d'erreur lors du chargement */}
+          {/* Message d'erreur */}
           {error && (
             <div style={errorBoxStyle}>
-              <strong>{error}</strong>
+              <div>
+                <strong>Erreur de connexion</strong>
+                <pre style={{ 
+                  fontSize: "0.85rem", 
+                  marginTop: "10px", 
+                  whiteSpace: "pre-wrap",
+                  maxWidth: "100%"
+                }}>
+                  {error}
+                </pre>
+              </div>
               <button onClick={chargerDonnees} style={retryBtnStyle}>
-                Réessayer
+                Reessayer
               </button>
             </div>
           )}
 
           {loading ? (
-            // affiche le loader pendant le chargement
             <Loader />
           ) : (
             <>
@@ -266,8 +471,8 @@ export default function DashboardAdmin() {
 
 /* ----------------  les composants du dashboard ---------------- */
 
-// élément de menu dans la sidebar
 function MenuItem({ label, active, onClick }) {
+  // Composant pour un element du menu lateral
   return (
     <div
       onClick={onClick}
@@ -289,9 +494,8 @@ function MenuItem({ label, active, onClick }) {
   );
 }
 
-/* ---------------- LISTE UTILISATEURS ---------------- */
-
 function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
+  // Composant pour afficher la liste des utilisateurs (formateurs ou apprenants)
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "30px" }}>
@@ -306,8 +510,8 @@ function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
 
       {users.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px 20px", color: "#999" }}>
-          <div style={{ fontSize: "3rem", marginBottom: "20px" }}>📋</div>
-          <p style={{ fontSize: "1.1rem" }}>Aucun {title.slice(0, -1)} enregistré</p>
+          <div style={{ fontSize: "3rem", marginBottom: "20px" }}></div>
+          <p style={{ fontSize: "1.1rem" }}>Aucun {title.slice(0, -1)} enregistre</p>
           <p style={{ fontSize: "0.9rem", marginTop: "10px" }}>Cliquez sur "Ajouter" pour commencer</p>
         </div>
       ) : (
@@ -321,11 +525,11 @@ function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
                     {user.nom} {user.prenom}
                   </div>
                   <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                    mail :  {user.email || "Email non renseigné"}
+                    {user.email || "Email non renseigne"}
                   </div>
                   {user.telephone && (
                     <div style={{ fontSize: "0.9rem", color: "#666" }}>
-                      telephone :  {user.telephone}
+                      {user.telephone}
                     </div>
                   )}
                 </div>
@@ -355,20 +559,17 @@ function AdminList({ title, users, getUserId, onAdd, onEdit, onDelete }) {
   );
 }
 
-/* ---------------- FORMULAIRE AJOUT/MODIFICATION ---------------- */
-
 function UserForm({ mode, user, userType, onBack, onSave }) {
+  // Composant pour le formulaire d'ajout/modification d'utilisateur
   const [form, setForm] = useState(user);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    // Validations
     if (!form.nom?.trim() || !form.prenom?.trim() || !form.email?.trim()) {
       alert("Les champs Nom, Prénom et Email sont obligatoires");
       return;
     }
 
-    // Validation email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       alert("L'email n'est pas valide");
@@ -385,7 +586,6 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
       return;
     }
 
-    // sauvegarde des nouvelles données
     setLoading(true);
     await onSave(form);
     setLoading(false);
@@ -410,7 +610,7 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
           fontSize: "2rem",
           fontWeight: "bold"
         }}>
-          {mode === "add" ? "" : (form.nom?.charAt(0) || "?")}
+          {mode === "add" ? "+" : (form.nom?.charAt(0) || "?")}
         </div>
         <h2 style={{ marginLeft: "20px", fontSize: "1.8rem" }}>
           {mode === "add" 
@@ -453,7 +653,7 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
 
         <div style={{ borderTop: "2px solid #eee", paddingTop: "20px", marginTop: "10px" }}>
           <h3 style={{ fontSize: "1rem", marginBottom: "15px", color: "#666" }}>
-             {mode === "add" ? "Mot de passe *" : "Changer le mot de passe (optionnel)"}
+            {mode === "add" ? "Mot de passe *" : "Changer le mot de passe (optionnel)"}
           </h3>
           
           <Input 
@@ -473,20 +673,18 @@ function UserForm({ mode, user, userType, onBack, onSave }) {
       </div>
 
       <button 
-      
         onClick={handleSubmit} 
         disabled={loading} 
         style={{ ...submitBtnStyle, opacity: loading ? 0.6 : 1, cursor: loading ? "not-allowed" : "pointer" }}
       >
-        {loading ? " Enregistrement..." : mode === "add" ? "Ajouter" : "Modifier"}
+        {loading ? "Enregistrement..." : mode === "add" ? "Ajouter" : "Modifier"}
       </button>
     </div>
   );
 }
 
-
-// loader chargement 
 function Loader() {
+  // Composant d'indicateur de chargement
   return (
     <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "400px", gap: "20px" }}>
       <div style={{ 
@@ -508,9 +706,8 @@ function Loader() {
   );
 }
 
-
-// composant input 
 function Input({ label, type = "text", value, onChange, placeholder }) {
+  // Composant pour un champ de saisie
   return (
     <div>
       <label style={{ 
@@ -639,24 +836,25 @@ const submitBtnStyle = {
 };
 
 const errorBoxStyle = {
-  padding: "15px",
+  padding: "20px",
   background: "#fee",
-  border: "1px solid #fcc",
+  border: "2px solid #fcc",
   borderRadius: "10px",
   marginBottom: "20px",
   color: "#c00",
   display: "flex",
   justifyContent: "space-between",
-  alignItems: "center"
+  alignItems: "start"
 };
 
 const retryBtnStyle = {
   marginLeft: "15px",
-  padding: "6px 12px",
+  padding: "8px 16px",
   cursor: "pointer",
-  borderRadius: "6px",
+  borderRadius: "8px",
   border: "none",
   background: "#c00",
   color: "#fff",
-  fontWeight: "bold"
+  fontWeight: "bold",
+  whiteSpace: "nowrap"
 };
