@@ -12,14 +12,12 @@ const Connexion = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
         setError('');
     };
 
     const determineUserRole = (userData) => {
-        // reconnait le rôle 
         if (userData.idAdmin !== undefined && userData.idAdmin !== null) {
             return 'ADMIN';
         } else if (userData.idFormateur !== undefined && userData.idFormateur !== null) {
@@ -27,17 +25,15 @@ const Connexion = () => {
         } else if (userData.idApprenant !== undefined && userData.idApprenant !== null) {
             return 'APPRENANT';
         }
-        return 'APPRENANT'; // rôle par défaut
+        return 'APPRENANT';
     };
 
-    // soumission du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
 
         try {
-            // appel l'api pour la connexion
             const response = await axios.post(
                 `${API_URL}/utilisateurs/connexion`,
                 null,
@@ -51,33 +47,27 @@ const Connexion = () => {
 
             console.log('Connexion réussie:', response.data);
 
-            // détermine le rôle de l'utilisateur
             const role = determineUserRole(response.data);
-
-            // ajoute le rôle à l'objet utilisateur
             const userWithRole = {
                 ...response.data,
                 role: role
             };
 
-            // Stocker dans le localStorage
             localStorage.setItem('user', JSON.stringify(userWithRole));
-
             console.log('Utilisateur avec rôle:', userWithRole);
 
-            // accès au dashboard en fonction du rôle
+            // ✅ Utiliser navigate() au lieu de window.location.href
             if (role === 'ADMIN') {
-                window.location.href = '/dashboard/admin';
+                navigate('/dashboard/admin');
             } else if (role === 'FORMATEUR') {
-                window.location.href = '/dashboard/formateur';
+                navigate('/dashboard/formateur');
             } else if (role === 'APPRENANT') {
-                window.location.href = '/dashboard/apprenant';
+                navigate('/dashboard/apprenant');
             }
 
         } catch (err) {
             console.error('Erreur de connexion:', err);
 
-            // gestion des erreurs
             if (err.response && err.response.status === 401) {
                 setError('Email ou mot de passe incorrect');
             } else if (err.response && err.response.status === 500) {
@@ -104,7 +94,8 @@ const Connexion = () => {
                                     Débutez votre reconversion
                                 </h4>
                                 <p className="text-sm leading-relaxed opacity-90">
-                                    Découvrez des parcours variés pour acquérir des compétences concrètes et réussir votre reconversion.                                </p>
+                                    Découvrez des parcours variés pour acquérir des compétences concrètes et réussir votre reconversion.
+                                </p>
                             </div>
 
                             <div className="md:w-1/2 p-10 lg:p-16">

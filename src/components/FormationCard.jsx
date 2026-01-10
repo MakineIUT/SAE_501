@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 export default function FormationCard({ formation, onOpenDetails }) {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedSession, setSelectedSession] = useState(null);
 
+  // ✅ Ouverture de la modale directement (pas de navigation vers /paiement)
   const handleInscription = () => {
-    // voir si user est connecté
+    // Vérifier si l'utilisateur est connecté
     const user = localStorage.getItem("user");
 
     if (!user) {
-      navigate("/inscription");
+      // Si pas connecté, la modale redirigera vers inscription
+      onOpenDetails(formation);
       return;
     }
 
@@ -21,13 +21,8 @@ export default function FormationCard({ formation, onOpenDetails }) {
       return;
     }
     
-    // envoie au paiement 
-    navigate("/paiement", { 
-      state: { 
-        formation: formation,
-        session: selectedSession
-      } 
-    });
+    // Ouvrir la modale avec la session présélectionnée
+    onOpenDetails(formation, selectedSession);
   };
 
   return (
@@ -40,7 +35,7 @@ export default function FormationCard({ formation, onOpenDetails }) {
           className="w-full h-[500px] object-cover rounded-[20px] shadow-2xl"
         />
 
-        {/*Contenu de la carte avec les appels des données de l'api */}
+        {/* Contenu de la carte */}
         <div className="absolute top-8 left-0 md:-left-12 lg:-left-24 w-[380px] max-w-[90%] bg-white rounded-[24px] shadow-2xl p-6 z-10">
           <h2 className="text-3xl font-extrabold text-gray-900 leading-tight mb-2 font-poppins">
             {formation.nom}

@@ -3,6 +3,7 @@ import { User, ShoppingCart, LayoutDashboard, Trash2, CheckCircle, Award, Trendi
 import { useLocation } from 'react-router-dom';
 import API_URL from "../api.js";
 import Attestation from "../components/Attestation.jsx";
+import StripeCheckout from "../components/StripeCheckout.jsx";
 
 export default function DashboardApprenant() {
   const location = useLocation();
@@ -12,11 +13,11 @@ export default function DashboardApprenant() {
   const [paiements, setPaiements] = useState([]);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showStripeCheckout, setShowStripeCheckout] = useState(false);
 
   const user = JSON.parse(localStorage.getItem('user'));
   const idApprenant = user?.idApprenant || user?.idUtilisateur;
 
-  // ✅ Ouvrir l'onglet panier si on vient de l'inscription
   useEffect(() => {
     if (location.state?.openTab) {
       setActiveTab(location.state.openTab);
@@ -33,25 +34,20 @@ export default function DashboardApprenant() {
 
   const chargerTout = async () => {
     try {
-      // Charger inscriptions
       const resInsc = await fetch(`${API_URL}/apprenants/${idApprenant}/inscriptions`);
       const dataInsc = await resInsc.json();
       setInscriptions(dataInsc);
 
-      // Charger paiements
       const resPaie = await fetch(`${API_URL}/apprenants/${idApprenant}/paiements`);
       const dataPaie = await resPaie.json();
       setPaiements(dataPaie);
 
-      // Charger apprenant
       const resApp = await fetch(`${API_URL}/apprenants/${idApprenant}`);
       const dataApp = await resApp.json();
       setApprenant(dataApp);
 
-      // ✅ Charger les notes
       const resNotes = await fetch(`${API_URL}/apprenants/${idApprenant}/notes`);
       const dataNotes = await resNotes.json();
-      console.log("✅ Notes:", dataNotes);
       setNotes(dataNotes);
 
     } catch (err) {
@@ -69,6 +65,20 @@ export default function DashboardApprenant() {
     } catch (err) { 
       alert("Erreur"); 
     }
+  };
+
+  const handlePaymentSuccess = async (paymentMethod) => {
+    console.log("✅ Paiement réussi avec Stripe:", paymentMethod);
+    
+    // TODO: Appeler votre API backend pour :
+    // 1. Valider le paiement
+    // 2. Mettre à jour le statut des inscriptions en "Payée"
+    // 3. Créer les enregistrements de paiement
+    
+    // Pour l'instant, on recharge simplement les données
+    setShowStripeCheckout(false);
+    alert("✅ Vos formations ont été achetées avec succès !");
+    chargerTout();
   };
 
   if (loading) {
@@ -98,11 +108,24 @@ export default function DashboardApprenant() {
             <PanierView 
               inscriptions={inscriptions}
               paiements={paiements}
-              onDelete={handleDelete} 
+              onDelete={handleDelete}
+              onProceedToPayment={() => setShowStripeCheckout(true)}
             />
           )}
         </div>
       </div>
+
+      {/* Modale Stripe */}
+      {showStripeCheckout && (
+        <StripeCheckout 
+          totalPrice={inscriptions
+            .filter(i => i.statut === "En attente")
+            .reduce((sum, i) => sum + (i.formation?.prix || 0), 0)}
+          inscriptions={inscriptions.filter(i => i.statut === "En attente")}
+          onSuccess={handlePaymentSuccess}
+          onClose={() => setShowStripeCheckout(false)}
+        />
+      )}
     </div>
   );
 }
@@ -137,7 +160,6 @@ function MenuItem({ label, icon, active, onClick }) {
 }
 
 function NotesView({ notes }) {
-  // Calculer la moyenne
   const moyenne = notes.length > 0 
     ? (notes.reduce((sum, n) => sum + parseFloat(n.valeur), 0) / notes.length).toFixed(2)
     : "0.00";
@@ -150,7 +172,6 @@ function NotesView({ notes }) {
       </h2>
       <p style={{ color: "#666", marginBottom: "30px" }}>Consultez vos résultats et votre progression</p>
 
-      {/* Carte Moyenne */}
       <div style={{ 
         background: "linear-gradient(135deg, rgba(130, 3, 192, 1) 0%, rgba(100, 2, 150, 1) 100%)", 
         padding: "30px", 
@@ -169,7 +190,6 @@ function NotesView({ notes }) {
         </div>
       </div>
 
-      {/* Liste des notes */}
       {notes.length > 0 ? (
         <div style={{ display: "grid", gap: "15px" }}>
           {notes.map(note => (
@@ -241,18 +261,21 @@ function NotesView({ notes }) {
   );
 }
 
-function PanierView({ inscriptions, paiements, onDelete }) {
-  const inscriptionsAvecPaiement = inscriptions.map(insc => {
-    const aPaiement = paiements.some(p => p.statut === "Validé");
-    return {
-      ...insc,
-      estPayee: aPaiement
-    }; 
-  });
+function PanierView({ inscriptions, paiements, onDelete, onProceedToPayment }) {
+  const inscriptionsPayees = inscriptions.filter(insc => 
+    insc.statut === "Payée" || 
+    insc.statut === "Payée" ||
+    insc.statut === "PayÃ©e" ||
+    insc.statut === "PayÃƒÂ©e"
+  );
 
-  const payees = inscriptionsAvecPaiement.filter(i => i.estPayee);
-  const enAttente = inscriptionsAvecPaiement.filter(i => !i.estPayee);
-  const totalPrice = enAttente.reduce((sum, i) => sum + (i.formation?.prix || 0), 0);
+  const inscriptionsEnAttente = inscriptions.filter(insc => 
+    insc.statut === "En attente" ||
+    insc.statut === "en attente" ||
+    insc.statut === "EN_ATTENTE"
+  );
+
+  const totalPrice = inscriptionsEnAttente.reduce((sum, insc) => sum + (insc.formation?.prix || 0), 0);
 
   return (
     <div style={{ maxWidth: "850px", margin: "0 auto" }}>
@@ -261,46 +284,104 @@ function PanierView({ inscriptions, paiements, onDelete }) {
       <div style={{ marginBottom: "40px" }}>
         <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", color: "#6d00bc", marginBottom: "15px" }}>
           <CheckCircle size={20} style={{ display: "inline", marginRight: "10px" }} />
-          Formations achetées ({payees.length})
+          Formations achetées ({inscriptionsPayees.length})
         </h3>
-        {payees.length > 0 ? (
-          payees.map(insc => (
-            <div key={insc.idInscription} style={{ padding: "15px", background: "#f0fff4", border: "1px solid #c6f6d5", borderRadius: "15px", marginBottom: "10px" }}>
-              <p style={{ fontWeight: "bold", margin: 0 }}>{insc.formation?.intitule || "Formation"}</p>
-              <p style={{ fontSize: "0.8rem", color: "#666", margin: "5px 0 0 0" }}>Prix: {insc.formation?.prix || 0} €</p>
-            </div>
-          ))
-        ) : (
-          <p style={{ color: "#999" }}>Aucune formation payée</p>
-        )}
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+          {inscriptionsPayees.length > 0 ? (
+            inscriptionsPayees.map(insc => (
+              <div key={insc.idInscription} style={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center", 
+                padding: "15px 25px", 
+                background: "#f0fff4", 
+                border: "1px solid #c6f6d5", 
+                borderRadius: "15px" 
+              }}>
+                <div>
+                  <h4 style={{ margin: 0, fontWeight: "bold" }}>{insc.formation?.intitule || "Formation"}</h4>
+                  <p style={{ margin: "4px 0", fontSize: "0.8rem", color: "#666" }}>
+                    Payé • Ville: {insc.session?.lieu?.ville || "N/A"}
+                  </p>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <p style={{ margin: 0, fontWeight: "bold", fontSize: "1.1rem" }}>{insc.formation?.prix || 0} €</p>
+                  <span style={{ color: "#16a34a", fontWeight: "bold", fontSize: "0.7rem" }}>CONFIRMÉ</span>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p style={{ color: "#999", fontSize: "0.9rem" }}>Aucun achat trouvé.</p>
+          )}
+        </div>
       </div>
 
       <hr style={{ border: "none", borderTop: "1px solid #eee", margin: "30px 0" }} />
 
-      <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "15px" }}>En attente ({enAttente.length})</h3>
-      {enAttente.length > 0 ? (
-        <div style={{ background: "#fff", padding: "20px", borderRadius: "15px" }}>
-          {enAttente.map(insc => (
-            <div key={insc.idInscription} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid #eee" }}>
-              <div>
-                <p style={{ margin: 0, fontWeight: "bold" }}>{insc.formation?.intitule || "Formation"}</p>
-                <span style={{ fontSize: "0.7rem", color: "#f59e0b" }}>● {insc.statut}</span>
+      <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "15px" }}>
+        🛒 En attente de paiement ({inscriptionsEnAttente.length})
+      </h3>
+      <div style={{ background: "#fff", padding: "20px", borderRadius: "20px", boxShadow: "0 4px 15px rgba(0,0,0,0.05)" }}>
+        {inscriptionsEnAttente.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#999" }}>Panier vide.</p>
+        ) : (
+          <>
+            {inscriptionsEnAttente.map((insc) => (
+              <div key={insc.idInscription} style={{ 
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center", 
+                padding: "12px 0", 
+                borderBottom: "1px solid #eee" 
+              }}>
+                <div>
+                  <p style={{ margin: 0, fontWeight: "bold" }}>{insc.formation?.intitule || "Formation"}</p>
+                  <p style={{ margin: "4px 0 0 0", fontSize: "0.8rem", color: "#666" }}>
+                    📍 {insc.session?.lieu?.ville || "En ligne"}
+                  </p>
+                  <span style={{ fontSize: "0.7rem", color: "#f59e0b" }}>● {insc.statut}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                  <span style={{ fontWeight: "bold", fontSize: "1.1rem" }}>{insc.formation?.prix || 0} €</span>
+                  <button 
+                    onClick={() => onDelete(insc.idInscription)} 
+                    style={{ 
+                      background: "none", 
+                      border: "none", 
+                      color: "#ef4444", 
+                      cursor: "pointer",
+                      padding: "8px",
+                      borderRadius: "8px"
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                <span style={{ fontWeight: "bold" }}>{insc.formation?.prix || 0} €</span>
-                <button onClick={() => onDelete(insc.idInscription)} style={{ background: "none", border: "none", color: "#ef4444", cursor: "pointer" }}>
-                  <Trash2 size={18} />
-                </button>
-              </div>
+            ))}
+            <div style={{ marginTop: "20px", textAlign: "right", borderTop: "2px solid #6d00bc", paddingTop: "15px" }}>
+              <p style={{ fontSize: "1.3rem", fontWeight: "bold", color: "#6d00bc" }}>Total : {totalPrice} €</p>
+              <button 
+                onClick={onProceedToPayment}
+                style={{ 
+                  marginTop: "10px", 
+                  padding: "12px 30px", 
+                  background: "rgba(130, 3, 192, 1)", 
+                  color: "#fff", 
+                  border: "none", 
+                  borderRadius: "10px", 
+                  fontWeight: "bold", 
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  boxShadow: "0 4px 12px rgba(130, 3, 192, 0.3)"
+                }}
+              >
+                💳 Procéder au paiement
+              </button>
             </div>
-          ))}
-          <div style={{ marginTop: "20px", textAlign: "right" }}>
-            <p style={{ fontSize: "1.2rem", fontWeight: "bold" }}>Total: {totalPrice} €</p>
-          </div>
-        </div>
-      ) : (
-        <p style={{ color: "#999" }}>Panier vide</p>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
@@ -315,7 +396,6 @@ function DashboardView({ inscriptions, notes }) {
       <h2 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "30px" }}>Mon Dashboard</h2>
       
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px", marginBottom: "30px" }}>
-        {/* Carte Inscriptions */}
         <div style={{ 
           background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)", 
           padding: "25px", 
@@ -328,7 +408,6 @@ function DashboardView({ inscriptions, notes }) {
           <h3 style={{ fontSize: "2.5rem", fontWeight: "bold", margin: "10px 0 0 0" }}>{inscriptions.length}</h3>
         </div>
 
-        {/* Carte Notes */}
         <div style={{ 
           background: "linear-gradient(135deg, rgba(130, 3, 192, 1) 0%, rgba(100, 2, 150, 1) 100%)", 
           padding: "25px", 
@@ -342,7 +421,6 @@ function DashboardView({ inscriptions, notes }) {
         </div>
       </div>
 
-      {/* Dernières notes */}
       {notes.length > 0 && (
         <div style={{ background: "#fff", padding: "25px", borderRadius: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
           <h3 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "20px" }}>Dernières notes</h3>

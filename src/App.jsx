@@ -33,7 +33,7 @@ function App() {
       <Route path='/dashboard/admin' element={<DashboardAdmin />} />
       <Route path='/dashboard/formateur' element={<DashboardFormateur />} />
       <Route path='/apropos' element={<Apropos />} />
-      <Route path='/paiement' element={<Paiement />} />
+      {/* <Route path='/paiement' element={<Paiement />} /> */}
       <Route path='/attestation' element={<Attestation />} />
     </Routes>
 
