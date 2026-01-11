@@ -62,19 +62,19 @@ Conception du Design System. Gestion du projet React : Développement des compos
 
 **Back-End** : Java, Spring Boot, Spring Security, Spring Data JPA.
 
-Base de données : MySQL.
+**Base de données** : MySQL.
 
-Création des maquettes et leur charte graphique : Figma.
+**Création des maquettes et leur charte graphique** : Figma.
 
-Développement : Visual Studio Code, IntelliJ IDEA.
+**Développement** : Visual Studio Code, IntelliJ IDEA.
 
-Hébergement : Railway.
+**Hébergement** : Railway.
 
-Containerisation : Docker.
+**Containerisation** : Docker.
 
-Gestion de version : GitHub.
+**Gestion de version** : GitHub.
 
-Collaboration : Google Drive, Instagram, Trello.
+**Collaboration** : Google Drive, Instagram, Trello.
 
 ## Résultats obtenus
 
@@ -96,4 +96,5 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
