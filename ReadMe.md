@@ -59,7 +59,7 @@ Conception du modèle MCD, Création de la salle de classe virtuelle en 3D sur B
 
 **Makine Mhoumadi** : Designer Graphique, Développeur Front, Développeur Back-End
 
-Conception du Design System. Gestion du projet React : Développement des composants React. Tests et validation du code. 
+Conception du diagramme de classe. Conception du Design System. Gestion du projet React : Développement des composants React. Tests et validation du code. 
 ## Langages utilisés
 
 **Front-End** : HTML, CSS, JavaScript, React.
@@ -100,6 +100,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
