@@ -10,6 +10,8 @@
 ## Lien vers le projet hébergé
 Notre plateforme TRITECH fonctionne en local, car  l'ensemble des fonctionnalités sont en cours de modifications. L'API back-end est actuellement déployée sur Railway à l'adresse suivante : https://grateful-reverence-production.up.railway.app/api
 
+Le dossier contenant tout le front se trouve sur la branche **front-tritech**
+Le dossier du projet Spring Boot se trouve sur la branche principale c'est-à-dire le **main**
 ---
 
 ## Présentation de TRITECH
@@ -96,6 +98,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
