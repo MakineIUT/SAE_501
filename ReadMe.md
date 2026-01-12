@@ -38,6 +38,11 @@ TRITECH est une plateforme permettant aux organismes de formation de gérer l'en
 
 <img width="1760" height="1360" alt="Classe UML" src="https://github.com/user-attachments/assets/f0d50c4e-7134-41f5-9730-66168b42e2d7" />
 
+## DIAGRAMME DE CAS D'UTILISATION 
+
+<img width="441" height="364" alt="image" src="https://github.com/user-attachments/assets/024478ea-a7fb-4402-a3e9-1698ee9fea0b" />
+
+
 
 ## Comment s'est déroulée l'organisation de ce projet ?
 
@@ -100,6 +105,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
