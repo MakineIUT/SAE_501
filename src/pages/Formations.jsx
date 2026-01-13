@@ -130,7 +130,7 @@ export default function Formations() {
 
   // rendu principal
   return (
-    <div className="min-h-screen bg-[#FDF7FF] py-20 font-sans">
+    <div className="min-h-screen bg-[#FDF7FF]  dark:bg-gradient-to-r from-[#4500ab] to-[#8700c2] py-20 font-sans">
       <div
         ref={sliderRef}
         className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide px-8 pb-12 gap-8 items-stretch"
