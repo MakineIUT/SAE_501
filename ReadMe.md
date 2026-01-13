@@ -54,7 +54,7 @@ Le projet se déroule sur plusieurs semaines. L'organisation s'est faite via Tre
 
 Organisation et meneur du projet. Développement de l'API REST avec Spring Boot. Liaison entre l'API et le front.
 
-**Zeinabou Bal** : Développeut Back, Développeur Front, Designer Graphique
+**Zeinabou Bal** : Développeur Back, Développeur Front, Designer Graphique
 
 Conception de la base de données. Développement des composants React. Modélisatrice du modèle 3D et Intégration des éléments 3D dans l'application React.
 
@@ -105,6 +105,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
