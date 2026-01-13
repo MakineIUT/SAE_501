@@ -26,7 +26,7 @@ TRITECH est une plateforme permettant aux organismes de formation de gérer l'en
 
 **PAGE FORMATEUR (INTERVENANT)** : La page formateur offre la possibilité de gérer les sessions de formation de manière autonome. Les formateurs peuvent saisir les notes de leurs apprenants, enregistrer les présences pour chaque session et suivre la progression de leurs groupes.
 
-**PAGE ADMIN (ADMINISTRATEUR)** : La page admin offre la possibilité d'ajouter des utilisateurs au sein de la plateforme TRITECH. Ajouter de nouveaux apprenants pour qu'ils puissent observer l'intégralité de leurs résultats en détail, créer des comptes formateurs et leur affecter des formations. De plus, l'admin a accès à la modification d'un profil utilisateur et il a la possibilité d'en supprimer. L'administrateur peut créer et gérer les formations proposées, superviser l'ensemble des sessions et consulter les statistiques globales de la plateforme.
+**PAGE ADMIN (ADMINISTRATEUR)** : La page admin offre la possibilité d'ajouter des utilisateurs au sein de la plateforme TRITECH. Ajouter de nouveaux apprenants pour qu'ils puissent observer l'intégralité de leurs résultats en détail, créer des comptes formateurs et leur affecter des formations. De plus, l'admin a accès à la modification d'un profil utilisateur et il a la possibilité d'en supprimer. 
 
 **PAIEMENT SÉCURISÉ AVEC STRIPE** : La plateforme intègre Stripe pour la gestion des paiements. Les apprenants peuvent régler leurs formations en ligne de manière sécurisée grâce à l'intégration de Stripe Checkout. Cette fonctionnalité permet une gestion automatisée des transactions financières.
 
@@ -105,6 +105,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
