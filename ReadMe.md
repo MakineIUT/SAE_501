@@ -50,21 +50,22 @@ Le projet se déroule sur plusieurs semaines. L'organisation s'est faite via Tre
 
 ## Répartition des tâches
 
-**Sheinez Ben Boubaker** : Chef de projet, Développeur Back-End, Développeur Front
+**Sheinez Ben Boubaker** : Chef de projet, Développeur Back-End, Développeur Front-End
 
 Organisation et meneur du projet. Développement de l'API REST avec Spring Boot. Liaison entre l'API et le front.
 
-**Zeinabou Bal** : Développeur Back, Développeur Front, Designer Graphique
+**Zeinabou Bal** : Développeur Back-End, Développeur Front-End, Designer Graphique
 
 Conception de la base de données. Développement des composants React. Modélisatrice du modèle 3D et Intégration des éléments 3D dans l'application React.
 
 **Markhus Hounsou** : Modeleur 3D, Développeur Front
 
-Conception du modèle MCD, Création de la salle de classe virtuelle en 3D sur Blender. Développement des composants React. Optimisation des performances 3D.
+Conception de l'architecture fonctionnelle, Création de la salle de classe virtuelle en 3D sur Blender. Développement des pages React. Optimisation des performances 3D.
 
-**Makine Mhoumadi** : Designer Graphique, Développeur Front, Développeur Back-End
+**Makine Mhoumadi** : Designer Graphique, Développeur Front-End, Développeur Back-End
 
 Conception du diagramme de classe. Conception du Design System. Gestion du projet React : Développement des composants React. Tests et validation du code. 
+
 ## Langages utilisés
 
 **Front-End** : HTML, CSS, JavaScript, React.
@@ -105,6 +106,7 @@ La liaison entre l'API et le front a été difficile, notamment pour la gestion 
 ## Conclusion
 
 Le projet TRITECH nous a permis de gagner en expérience dans le métier de développement web, mais aussi dans l'organisation d'un projet intéressant. Ce projet nous a fait comprendre l'utilisation de React tout en acquérant de nouvelles compétences en Spring Boot, et en développant encore mieux notre expertise en design, en développement front et back. Mais aussi sur la modélisation 3D, l'intégration de paiements avec Stripe et le travail en groupe.
+
 
 
 
