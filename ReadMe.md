@@ -92,9 +92,6 @@ Conception du diagramme de classe. Conception du Design System. Gestion du proje
 
 https://github.com/user-attachments/assets/92ff334c-fde1-4341-bc36-8aa132eeaa45
 
-## Maquette/Prototype
-<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/design/z7gnM8LO8QlH5JPikrbSDD/maquette-SAE-501?node-id=0-1&embed-host=share" allowfullscreen></iframe>
----
 
 ### Nos réussites
 
