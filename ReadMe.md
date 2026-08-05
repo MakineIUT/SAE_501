@@ -16,6 +16,7 @@ Le dossier du projet Spring Boot se trouve sur la branche principale c'est-à-di
 
 ---
 
+
 ## Présentation de TRITECH
 
 TRITECH est une plateforme permettant aux organismes de formation de gérer l'ensemble de leurs activités pédagogiques, elle propose aussi une expérience immersive avec une visite virtuelle en 3D d'une salle de classe informatique. La plateforme offre aux apprenants la possibilité de consulter leurs résultats, de suivre leur progression et de télécharger leurs attestations. Elle permet également aux formateurs de gérer leurs sessions de formation, de saisir les notes et les présences. Enfin, les administrateurs peuvent superviser l'ensemble des utilisateurs, des formations et de la comptabilité.
@@ -91,7 +92,9 @@ Conception du diagramme de classe. Conception du Design System. Gestion du proje
 
 https://github.com/user-attachments/assets/92ff334c-fde1-4341-bc36-8aa132eeaa45
 
-
+## Maquette/Prototype
+<iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://embed.figma.com/design/z7gnM8LO8QlH5JPikrbSDD/maquette-SAE-501?node-id=0-1&embed-host=share" allowfullscreen></iframe>
+---
 
 ### Nos réussites
 
