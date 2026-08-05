@@ -8,7 +8,7 @@
 - Makine Mhoumadi
 
 ## Lien vers le projet hébergé
-Notre plateforme TRITECH fonctionne en local, car  l'ensemble des fonctionnalités sont en cours de modifications. L'API back-end est actuellement déployée sur Railway à l'adresse suivante : https://grateful-reverence-production.up.railway.app/api
+Notre plateforme TRITECH fonctionne en local, car  l'ensemble des fonctionnalités sont en cours de modification. L'API back-end est actuellement déployée sur Railway à l'adresse suivante : https://grateful-reverence-production.up.railway.app/api
 
 Le dossier contenant tout le front se trouve sur la branche **front-tritech**
 
@@ -47,7 +47,7 @@ TRITECH est une plateforme permettant aux organismes de formation de gérer l'en
 
 ## Comment s'est déroulée l'organisation de ce projet ?
 
-Le projet se déroule sur plusieurs semaines. L'organisation s'est faite via Trello et GitHub. La communication, la cohésion et l'esprit d'équipe ont été présents au sein de l'équipe afin de réussir ce projet. Des réunions et des retours ont été faits à chaque fois que nous devions nous y mettre. Lorsque l'un des membres rencontrait des difficultés, il était de notre mission à tous les autres membres de l'aider.
+Le projet se déroule sur plusieurs semaines. L'organisation s'est faite via Trello et GitHub. La communication, la cohésion et l'esprit d'équipe ont été au cœur de l'équipe pour mener à bien ce projet. Des réunions et des retours ont été faits à chaque fois que nous devions nous y mettre. Lorsque l'un des membres rencontrait des difficultés, il était de notre mission à tous les autres membres de l'aider.
 
 ## Répartition des tâches
 
@@ -57,11 +57,11 @@ Organisation et meneur du projet. Développement de l'API REST avec Spring Boot.
 
 **Zeinabou Bal** : Développeur Back-End, Développeur Front-End, Designer Graphique
 
-Conception de la base de données. Développement des composants React. Modélisatrice du modèle 3D et Intégration des éléments 3D dans l'application React.
+Conception de la base de données. Développement des composants React. Modélisation du modèle 3D et intégration des éléments 3D dans l'application React.
 
 **Markhus Hounsou** : Modeleur 3D, Développeur Front
 
-Conception de l'architecture fonctionnelle, Création de la salle de classe virtuelle en 3D sur Blender. Développement des pages React. Optimisation des performances 3D.
+Conception de l'architecture fonctionnelle, création de la salle de classe virtuelle en 3D sur Blender. Développement des pages React. Optimisation des performances 3D.
 
 **Makine Mhoumadi** : Designer Graphique, Développeur Front-End, Développeur Back-End
 
@@ -98,7 +98,7 @@ https://github.com/user-attachments/assets/92ff334c-fde1-4341-bc36-8aa132eeaa45
 
 ### Nos réussites
 
-Notre équipe est actuellement sur le point de finaliser le projet. Les éléments et les attentes que nous avons eus entre membres ont été répondus et sont en cours de finalisation pour les fonctionnalités des acteurs du site.
+Notre équipe est actuellement sur le point de finaliser le projet. Les éléments et les attentes que nous avons eus entre nous ont été pris en compte et sont en cours de finalisation pour les fonctionnalités des acteurs du site.
 
 L'API REST développée avec Spring Boot est fonctionnelle et déployée sur Railway. Les composants React développés en front ressemblent de très près à la maquette du site.L'intégration de la salle de classe en 3D a été réalisée avec succès et offre une expérience immersive aux utilisateurs, En revanche, Le fichier 3D n'est pas disponible sur GitHub en raison de sa taille importante.
 
